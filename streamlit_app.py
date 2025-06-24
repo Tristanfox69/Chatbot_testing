@@ -1,8 +1,8 @@
 import streamlit as st
-from langchain.chat_models import ChatOpenAI
+from langchain_community.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
 from langchain.vectorstores import FAISS
-from langchain.embeddings import HuggingFaceEmbeddings
+from langchain_community.embeddings import HuggingFaceEmbeddings
 from langchain.document_loaders import TextLoader
 from langchain.text_splitter import CharacterTextSplitter
 import os
@@ -17,19 +17,22 @@ docs = loader.load()
 text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
 texts = text_splitter.split_documents(docs)
 
-# Create vector store
+# Create vector store with HuggingFace Embeddings
 embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 db = FAISS.from_documents(texts, embeddings)
 retriever = db.as_retriever()
 
+# Chat model via OpenRouter
+llm = ChatOpenAI(
+    temperature=0,
+    model="openai/gpt-3.5-turbo",
+    base_url="https://openrouter.ai/api/v1",
+    api_key=os.getenv("OPENROUTER_API_KEY")
+)
+
 # QA Chain
 qa = RetrievalQA.from_chain_type(
-    llm=ChatOpenAI(
-        temperature=0,
-        openai_api_key=os.getenv("OPENROUTER_API_KEY"),
-        openai_api_base="https://openrouter.ai/api/v1",
-        model_name="openai/gpt-3.5-turbo"
-    ),
+    llm=llm,
     chain_type="stuff",
     retriever=retriever
 )
