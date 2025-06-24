@@ -1,45 +1,40 @@
 import streamlit as st
-from langchain_community.chat_models import ChatOpenAI
-from langchain.chains import RetrievalQA
-from langchain.vectorstores import FAISS
-from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain.document_loaders import TextLoader
-from langchain.text_splitter import CharacterTextSplitter
 import os
+import requests
 
-st.set_page_config(page_title="MisiBot - Traveloka", page_icon="🤖")
+st.set_page_config(page_title="MisiBot Traveloka", page_icon="🤖")
 st.title("🤖 MisiBot Traveloka")
-st.markdown("Tanya apa pun tentang misi Traveloka, dan bot akan bantu jawab berdasarkan dokumen resminya.")
+st.markdown("Tanya apa pun tentang misi Traveloka. Bot akan jawab berdasarkan dokumen yang sudah disiapkan.")
 
-# Load and split the document
-loader = TextLoader("misi_traveloka.txt")
-docs = loader.load()
-text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
-texts = text_splitter.split_documents(docs)
+# Load dokumentasi misi
+with open("misi_traveloka.txt", "r", encoding="utf-8") as file:
+    mission_context = file.read()
 
-# Create vector store with HuggingFace Embeddings
-embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
-db = FAISS.from_documents(texts, embeddings)
-retriever = db.as_retriever()
+# Fungsi buat kirim ke OpenRouter langsung
+def ask_openrouter(question, context):
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "HTTP-Referer": "https://chatbot-testing.streamlit.app",
+        "X-Title": "Traveloka MisiBot"
+    }
+    data = {
+        "model": "openai/gpt-3.5-turbo",
+        "messages": [
+            {"role": "system", "content": "Jawab berdasarkan dokumen berikut:\n" + context},
+            {"role": "user", "content": question}
+        ]
+    }
+    res = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=data)
+    return res.json()["choices"][0]["message"]["content"]
 
-# Chat model via OpenRouter
-llm = ChatOpenAI(
-    temperature=0,
-    model="openai/gpt-3.5-turbo",
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("OPENROUTER_API_KEY")
-)
+# Input
+user_input = st.text_input("❓ Pertanyaan kamu:", placeholder="Misal: Boleh uninstall aplikasinya?")
 
-# QA Chain
-qa = RetrievalQA.from_chain_type(
-    llm=llm,
-    chain_type="stuff",
-    retriever=retriever
-)
-
-# Input form
-query = st.text_input("❓ Pertanyaan kamu:", placeholder="Misal: Kalau aku udah pernah install Traveloka gimana?")
-if query:
-    with st.spinner("Menjawab..."):
-        result = qa.run(query)
-        st.success(result)
+if user_input:
+    with st.spinner("Bot sedang mikir..."):
+        try:
+            response = ask_openrouter(user_input, mission_context)
+            st.success(response)
+        except Exception as e:
+            st.error(f"Gagal menjawab: {e}")
