@@ -18,7 +18,7 @@ text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
 texts = text_splitter.split_documents(docs)
 
 # Create vector store
-embeddings = HuggingFaceEmbeddings()
+embeddings = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
 db = FAISS.from_documents(texts, embeddings)
 retriever = db.as_retriever()
 
