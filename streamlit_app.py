@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import requests
 
+st.write("🔍 API Key loaded?", os.getenv("OPENROUTER_API_KEY") is not None)
 st.set_page_config(page_title="MisiBot Traveloka", page_icon="🤖")
 st.title("🤖 MisiBot Traveloka")
 st.markdown("Tanya apa pun tentang misi Traveloka. Bot akan jawab berdasarkan dokumen yang sudah disiapkan.")
