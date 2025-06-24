@@ -2,7 +2,7 @@ import streamlit as st
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import RetrievalQA
 from langchain.vectorstores import FAISS
-from langchain.embeddings import OpenAIEmbeddings
+from langchain.embeddings import HuggingFaceEmbeddings
 from langchain.document_loaders import TextLoader
 from langchain.text_splitter import CharacterTextSplitter
 import os
@@ -18,7 +18,7 @@ text_splitter = CharacterTextSplitter(chunk_size=500, chunk_overlap=50)
 texts = text_splitter.split_documents(docs)
 
 # Create vector store
-embeddings = OpenAIEmbeddings(openai_api_key=os.getenv("OPENROUTER_API_KEY"), openai_api_base="https://openrouter.ai/api/v1")
+embeddings = HuggingFaceEmbeddings()
 db = FAISS.from_documents(texts, embeddings)
 retriever = db.as_retriever()
 
