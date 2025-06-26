@@ -36,10 +36,17 @@ def ask_openrouter(question, context):
     ]
     related_to_mission = any(keyword in question.lower() for keyword in misi_keywords)
 
+    # Deteksi apakah user tanya soal screenshot
+    screenshot_keywords = ["screenshot", "ss", "screen shot", "contoh tampilan", "contoh gambar"]
+    related_to_screenshot = any(keyword in question.lower() for keyword in screenshot_keywords)
+
     if related_to_mission:
         system_prompt = "Jawab hanya berdasarkan dokumen berikut:\n" + context
     else:
-        system_prompt = "Kamu adalah asisten ramah dari Traveloka. Jawab dengan sopan dan bantu user sebaik mungkin."
+        system_prompt = (
+            "Kamu adalah asisten ramah dari Traveloka. "
+            "Jika user menanyakan tentang contoh screenshot, arahkan untuk melihat gambar 'Contoh bener.jpeg' yang tersedia."
+        )
 
     data = {
         "model": "meta-llama/llama-4-maverick:free",
@@ -78,9 +85,9 @@ if user_input:
             if any(keyword in user_input.lower() for keyword in screenshot_keywords):
                 image_path = "screenshots/Contoh bener.jpeg"
                 if os.path.exists(image_path):
-                    st.image(image_path, caption="📸 Contoh pengerjaan yang benar", use_column_width=True)
+                    st.image(image_path, caption="📸 Contoh pengerjaan yang benar", use_container_width=True)
                 else:
-                    st.warning("Gambar tidak ditemukan. Pastikan file ada di folder 'screenshots/'.")
+                    st.warning("⚠️ Gambar tidak ditemukan. Pastikan file ada di folder 'screenshots/' dan namanya benar (Contoh bener.jpeg).")
 
         except Exception as e:
             st.error(str(e))
