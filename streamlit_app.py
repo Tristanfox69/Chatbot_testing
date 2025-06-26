@@ -1,6 +1,7 @@
 import streamlit as st
 import os
 import requests
+import base64
 
 # === SETUP HALAMAN ===
 st.set_page_config(page_title="MisiBot Traveloka", page_icon="🤖")
@@ -82,7 +83,6 @@ if user_input:
 
             # === TAMPILKAN GAMBAR JIKA PERTANYAAN TENTANG SCREENSHOT ===
             screenshot_keywords = ["screenshot", "ss", "screen shot", "contoh gambar", "contoh tampilan"]
-import base64
 
 if any(k in user_input.lower() for k in screenshot_keywords):
     image_path = "screenshots/contoh bener.jpeg"
