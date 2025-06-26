@@ -90,8 +90,7 @@ if user_input:
                         encoded = base64.b64encode(img_file.read()).decode()
 
                     st.markdown("---")
-                    st.markdown(
-                        f"""
+                    st.markdown(f"""
                         <div style='text-align:center;'>
                             <img src='data:image/jpeg;base64,{encoded}' width='200'/>
                             <p><em>📸 Contoh pengerjaan yang benar</em></p>
