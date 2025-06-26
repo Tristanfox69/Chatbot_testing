@@ -38,7 +38,6 @@ def ask_openrouter(question, context):
     screenshot_keywords = ["screenshot", "ss", "screen shot", "contoh gambar", "contoh tampilan"]
 
     related_to_mission = any(k in question.lower() for k in misi_keywords)
-    related_to_screenshot = any(k in question.lower() for k in screenshot_keywords)
 
     # Buat system prompt
     if related_to_mission:
@@ -83,25 +82,25 @@ if user_input:
 
             # === TAMPILKAN GAMBAR JIKA PERTANYAAN TENTANG SCREENSHOT ===
             screenshot_keywords = ["screenshot", "ss", "screen shot", "contoh gambar", "contoh tampilan"]
+            if any(k in user_input.lower() for k in screenshot_keywords):
+                image_path = "screenshots/contoh bener.jpeg"
 
-if any(k in user_input.lower() for k in screenshot_keywords):
-    image_path = "screenshots/contoh bener.jpeg"
+                if os.path.exists(image_path):
+                    with open(image_path, "rb") as img_file:
+                        encoded = base64.b64encode(img_file.read()).decode()
 
-    if os.path.exists(image_path):
-        # Baca dan encode gambar ke base64
-        with open(image_path, "rb") as img_file:
-            encoded = base64.b64encode(img_file.read()).decode()
+                    st.markdown("---")
+                    st.markdown(
+                        f"""
+                        <div style='text-align:center;'>
+                            <img src='data:image/jpeg;base64,{encoded}' width='350'/>
+                            <p><em>📸 Contoh pengerjaan yang benar</em></p>
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
+                else:
+                    st.warning("⚠️ Gambar tidak ditemukan. Pastikan file ada di folder 'screenshots/' dan bernama `contoh bener.jpeg`.")
 
-        # Tampilkan dengan HTML biar bisa atur lebar & posisi
-        st.markdown("---")
-        st.markdown(
-            f"""
-            <div style='text-align:center;'>
-                <img src='data:image/jpeg;base64,{encoded}' width='350'/>
-                <p><em>📸 Contoh pengerjaan yang benar</em></p>
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-    else:
-        st.warning("⚠️ Gambar tidak ditemukan di folder 'screenshots/'. Pastikan file `contoh bener.jpeg` ada.")
+        except Exception as e:
+            st.error(str(e))
