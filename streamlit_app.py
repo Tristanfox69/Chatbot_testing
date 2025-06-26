@@ -42,7 +42,7 @@ def ask_openrouter(question, context):
         system_prompt = "Kamu adalah asisten ramah dari Traveloka. Jawab dengan sopan dan bantu user sebaik mungkin."
 
     data = {
-        "model": "meta-llama/llama-3.2-11b-vision-instruct:free",
+        "model": "meta-llama/llama-4-maverick:free",
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": question}
