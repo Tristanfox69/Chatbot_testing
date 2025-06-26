@@ -4,9 +4,9 @@ import requests
 import base64
 
 # === SETUP HALAMAN ===
-st.set_page_config(page_title="MisiBot Traveloka", page_icon="🤖")
+st.set_page_config(page_title="Pipin Pintarnya", page_icon="🤖")
 st.title("🤖 MisiBot Traveloka")
-st.markdown("Tanya apa pun tentang misi Traveloka. Bot akan jawab berdasarkan yang aku bisa.")
+st.markdown("Tanya apa pun tentang misi Traveloka. Pipin sian menjawab pertanyaan berdasarkan yang Pipin bisa.")
 st.write("🔍 API Key loaded?", os.getenv("OPENROUTER_API_KEY") is not None)
 
 # === LOAD DOKUMEN MISI ===
@@ -44,7 +44,7 @@ def ask_openrouter(question, context):
         system_prompt = "Jawab hanya berdasarkan dokumen berikut:\n" + context
     else:
         system_prompt = (
-            "Kamu adalah asisten ramah dari Traveloka. "
+            "Kamu adalah pipin asisten pintarnya untuk menjawab pertanyaan user."
             "Jika user menanyakan tentang contoh screenshot, arahkan untuk melihat gambar yang tersedia."
         )
 
