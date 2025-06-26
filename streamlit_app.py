@@ -29,12 +29,12 @@ def ask_openrouter(question, context):
         "X-Title": "Traveloka MisiBot"
     }
     data = {
-        "model": "openai/gpt-3.5-turbo",
-        "messages": [
-            {"role": "system", "content": "Jawab hanya berdasarkan dokumen berikut:\n" + context},
-            {"role": "user", "content": question}
-        ]
-    }
+    "model": "deepseek/deepseek-chat-v3-0324:free",
+    "messages": [
+        {"role": "system", "content": "Jawab hanya berdasarkan dokumen berikut:\n" + context},
+        {"role": "user", "content": question}
+    ]
+}
     response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=data)
 
     if response.status_code != 200:
