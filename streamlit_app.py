@@ -29,7 +29,7 @@ def ask_openrouter(question, context):
         "X-Title": "Traveloka MisiBot"
     }
     data = {
-    "model": "deepseek/deepseek-chat-v3-0324:free",
+    "model": "deepseek/deepseek-r1-0528:free",
     "messages": [
         {"role": "system", "content": "Jawab hanya berdasarkan dokumen berikut:\n" + context},
         {"role": "user", "content": question}
