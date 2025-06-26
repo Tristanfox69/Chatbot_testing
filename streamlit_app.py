@@ -5,7 +5,7 @@ import requests
 # Setup Streamlit
 st.set_page_config(page_title="MisiBot Traveloka", page_icon="🤖")
 st.title("🤖 MisiBot Traveloka")
-st.markdown("Tanya apa pun tentang misi Traveloka. Bot akan jawab berdasarkan dokumen yang sudah disiapkan.")
+st.markdown("Tanya apa pun tentang misi Traveloka. Bot akan jawab berdasarkan yang aku bisa")
 st.write("🔍 API Key loaded?", os.getenv("OPENROUTER_API_KEY") is not None)
 
 # Load dokumentasi misi
@@ -45,7 +45,7 @@ def ask_openrouter(question, context):
     else:
         system_prompt = (
             "Kamu adalah asisten ramah dari Traveloka. "
-            "Jika user menanyakan tentang contoh screenshot, arahkan untuk melihat gambar 'Contoh bener.jpeg' yang tersedia."
+            "Jika user menanyakan tentang contoh screenshot, arahkan untuk melihat gambar 'Contoh bener.jpeg' yang tersedia tapi jangan sebut file nya sebut gambar saja."
         )
 
     data = {
