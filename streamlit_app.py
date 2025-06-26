@@ -82,16 +82,26 @@ if user_input:
 
             # === TAMPILKAN GAMBAR JIKA PERTANYAAN TENTANG SCREENSHOT ===
             screenshot_keywords = ["screenshot", "ss", "screen shot", "contoh gambar", "contoh tampilan"]
-            if any(k in user_input.lower() for k in screenshot_keywords):
-                image_path = "screenshots/contoh bener.jpeg"  # Gunakan lowercase dan tanpa spasi
+import base64
 
-                st.markdown("---")
-                st.markdown("📸 Berikut contoh pengerjaan yang benar:")
+if any(k in user_input.lower() for k in screenshot_keywords):
+    image_path = "screenshots/contoh bener.jpeg"
 
-                if os.path.exists(image_path):
-                    st.image(image_path, use_container_width=True)
-                else:
-                    st.warning("⚠️ Gambar tidak ditemukan di folder 'screenshots/'. Pastikan file `contoh_bener.jpeg` ada.")
+    if os.path.exists(image_path):
+        # Baca dan encode gambar ke base64
+        with open(image_path, "rb") as img_file:
+            encoded = base64.b64encode(img_file.read()).decode()
 
-        except Exception as e:
-            st.error(str(e))
+        # Tampilkan dengan HTML biar bisa atur lebar & posisi
+        st.markdown("---")
+        st.markdown(
+            f"""
+            <div style='text-align:center;'>
+                <img src='data:image/jpeg;base64,{encoded}' width='350'/>
+                <p><em>📸 Contoh pengerjaan yang benar</em></p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+    else:
+        st.warning("⚠️ Gambar tidak ditemukan di folder 'screenshots/'. Pastikan file `contoh bener.jpeg` ada.")
