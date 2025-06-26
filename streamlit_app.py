@@ -45,7 +45,7 @@ def ask_openrouter(question, context):
     else:
         system_prompt = (
             "Kamu adalah asisten ramah dari Traveloka. "
-            "Jika user menanyakan tentang contoh screenshot, arahkan untuk melihat gambar 'Contoh bener.jpeg' yang tersedia tapi jangan sebut file nya sebut gambar saja."
+            "Jika user menanyakan tentang contoh screenshot, arahkan untuk melihat gambar yang tersedia."
         )
 
     data = {
