@@ -2,25 +2,25 @@ import streamlit as st
 import os
 import requests
 
-# Setup Streamlit
+# === SETUP HALAMAN ===
 st.set_page_config(page_title="MisiBot Traveloka", page_icon="🤖")
 st.title("🤖 MisiBot Traveloka")
-st.markdown("Tanya apa pun tentang misi Traveloka. Bot akan jawab berdasarkan yang aku bisa")
+st.markdown("Tanya apa pun tentang misi Traveloka. Bot akan jawab berdasarkan yang aku bisa.")
 st.write("🔍 API Key loaded?", os.getenv("OPENROUTER_API_KEY") is not None)
 
-# Load dokumentasi misi
+# === LOAD DOKUMEN MISI ===
 with open("misi_traveloka.txt", "r", encoding="utf-8") as file:
     mission_context = file.read()
 
-# Cek histori chat
+# === CEK CHAT HISTORY ===
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# Tampilkan histori sebelumnya
+# === TAMPILKAN CHAT SEBELUMNYA ===
 for msg in st.session_state.chat_history:
     st.chat_message(msg["role"]).write(msg["content"])
 
-# Fungsi untuk kirim pertanyaan
+# === FUNCTION UNTUK REQUEST KE OPENROUTER ===
 def ask_openrouter(question, context):
     api_key = os.getenv("OPENROUTER_API_KEY")
     headers = {
@@ -29,17 +29,17 @@ def ask_openrouter(question, context):
         "X-Title": "Traveloka MisiBot"
     }
 
-    # Deteksi apakah pertanyaan berhubungan dengan misi
+    # Deteksi kata kunci
     misi_keywords = [
         "misi", "izin", "boleh", "policy", "aturan", "peraturan",
         "uninstall", "akses", "cuti", "tim", "internal", "data", "perusahaan"
     ]
-    related_to_mission = any(keyword in question.lower() for keyword in misi_keywords)
+    screenshot_keywords = ["screenshot", "ss", "screen shot", "contoh gambar", "contoh tampilan"]
 
-    # Deteksi apakah user tanya soal screenshot
-    screenshot_keywords = ["screenshot", "ss", "screen shot", "contoh tampilan", "contoh gambar"]
-    related_to_screenshot = any(keyword in question.lower() for keyword in screenshot_keywords)
+    related_to_mission = any(k in question.lower() for k in misi_keywords)
+    related_to_screenshot = any(k in question.lower() for k in screenshot_keywords)
 
+    # Buat system prompt
     if related_to_mission:
         system_prompt = "Jawab hanya berdasarkan dokumen berikut:\n" + context
     else:
@@ -67,12 +67,12 @@ def ask_openrouter(question, context):
 
     return result["choices"][0]["message"]["content"]
 
-# Input user
+# === INPUT USER ===
 user_input = st.text_input("❓ Pertanyaan kamu:", placeholder="Misal: Boleh uninstall aplikasinya?")
 
-# Proses input
 if user_input:
     st.chat_message("user").write(user_input)
+
     with st.spinner("Bot sedang mikir..."):
         try:
             response = ask_openrouter(user_input, mission_context)
@@ -80,14 +80,18 @@ if user_input:
             st.session_state.chat_history.append({"role": "assistant", "content": response})
             st.chat_message("assistant").write(response)
 
-            # Tambahan: kalau user minta screenshot, tampilkan gambar
-            screenshot_keywords = ["screenshot", "ss", "screen shot", "contoh tampilan", "contoh gambar"]
-            if any(keyword in user_input.lower() for keyword in screenshot_keywords):
-                image_path = "screenshots/Contoh bener.jpeg"
+            # === TAMPILKAN GAMBAR JIKA PERTANYAAN TENTANG SCREENSHOT ===
+            screenshot_keywords = ["screenshot", "ss", "screen shot", "contoh gambar", "contoh tampilan"]
+            if any(k in user_input.lower() for k in screenshot_keywords):
+                image_path = "screenshots/contoh_bener.jpeg"  # Gunakan lowercase dan tanpa spasi
+
+                st.markdown("---")
+                st.markdown("📸 Berikut contoh pengerjaan yang benar:")
+
                 if os.path.exists(image_path):
-                    st.image(image_path, caption="📸 Contoh pengerjaan yang benar", use_container_width=True)
+                    st.image(image_path, use_container_width=True)
                 else:
-                    st.warning("⚠️ Gambar tidak ditemukan. Pastikan file ada di folder 'screenshots/' dan namanya benar (Contoh bener.jpeg).")
+                    st.warning("⚠️ Gambar tidak ditemukan di folder 'screenshots/'. Pastikan file `contoh_bener.jpeg` ada.")
 
         except Exception as e:
             st.error(str(e))
