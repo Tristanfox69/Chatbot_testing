@@ -25,16 +25,30 @@ def ask_openrouter(question, context):
     api_key = os.getenv("OPENROUTER_API_KEY")
     headers = {
         "Authorization": f"Bearer {api_key}",
-        "HTTP-Referer": "https://chatbot-testing.streamlit.app",  # opsional
+        "HTTP-Referer": "https://chatbot-testing.streamlit.app",
         "X-Title": "Traveloka MisiBot"
     }
-    data = {
-    "model": "deepseek/deepseek-r1-0528:free",
-    "messages": [
-        {"role": "system", "content": "Jawab hanya berdasarkan dokumen berikut:\n" + context},
-        {"role": "user", "content": question}
+
+    # Deteksi apakah pertanyaan berhubungan dengan misi
+    misi_keywords = [
+        "misi", "izin", "boleh", "policy", "aturan", "peraturan",
+        "uninstall", "akses", "cuti", "tim", "internal", "data", "perusahaan"
     ]
-}
+    related_to_mission = any(keyword in question.lower() for keyword in misi_keywords)
+
+    if related_to_mission:
+        system_prompt = "Jawab hanya berdasarkan dokumen berikut:\n" + context
+    else:
+        system_prompt = "Kamu adalah asisten ramah dari Traveloka. Jawab dengan sopan dan bantu user sebaik mungkin."
+
+    data = {
+        "model": "deepseek/deepseek-r1-0528:free",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": question}
+        ]
+    }
+
     response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=data)
 
     if response.status_code != 200:
@@ -60,3 +74,4 @@ if user_input:
             st.chat_message("assistant").write(response)
         except Exception as e:
             st.error(str(e))
+
