@@ -93,7 +93,7 @@ if user_input:
                     st.markdown(
                         f"""
                         <div style='text-align:center;'>
-                            <img src='data:image/jpeg;base64,{encoded}' width='350'/>
+                            <img src='data:image/jpeg;base64,{encoded}' width='200'/>
                             <p><em>📸 Contoh pengerjaan yang benar</em></p>
                         </div>
                         """,
