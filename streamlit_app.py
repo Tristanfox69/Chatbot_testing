@@ -48,3 +48,23 @@ if user_input:
             st.success(response)
         except Exception as e:
             st.error(str(e))
+
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+# Tampilkan histori
+for msg in st.session_state.chat_history:
+    st.chat_message(msg["role"]).write(msg["content"])
+
+# Kalau ada input baru
+if user_input:
+    with st.spinner("Bot sedang mikir..."):
+        try:
+            response = ask_openrouter(user_input, mission_context)
+            # Tambahin ke histori
+            st.session_state.chat_history.append({"role": "user", "content": user_input})
+            st.session_state.chat_history.append({"role": "assistant", "content": response})
+            st.chat_message("assistant").write(response)
+        except Exception as e:
+            st.error(str(e))
+
