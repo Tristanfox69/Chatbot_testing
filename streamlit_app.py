@@ -72,6 +72,15 @@ if user_input:
             st.session_state.chat_history.append({"role": "user", "content": user_input})
             st.session_state.chat_history.append({"role": "assistant", "content": response})
             st.chat_message("assistant").write(response)
+
+            # Tambahan: kalau user minta screenshot, tampilkan gambar
+            screenshot_keywords = ["screenshot", "ss", "screen shot", "contoh tampilan", "contoh gambar"]
+            if any(keyword in user_input.lower() for keyword in screenshot_keywords):
+                image_path = "screenshots/Contoh bener.jpeg"
+                if os.path.exists(image_path):
+                    st.image(image_path, caption="📸 Contoh pengerjaan yang benar", use_column_width=True)
+                else:
+                    st.warning("Gambar tidak ditemukan. Pastikan file ada di folder 'screenshots/'.")
+
         except Exception as e:
             st.error(str(e))
-
