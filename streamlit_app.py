@@ -83,7 +83,7 @@ if user_input:
             # === TAMPILKAN GAMBAR JIKA PERTANYAAN TENTANG SCREENSHOT ===
             screenshot_keywords = ["screenshot", "ss", "screen shot", "contoh gambar", "contoh tampilan"]
             if any(k in user_input.lower() for k in screenshot_keywords):
-                image_path = "screenshots/contoh_bener.jpeg"  # Gunakan lowercase dan tanpa spasi
+                image_path = "screenshots/contoh bener.jpeg"  # Gunakan lowercase dan tanpa spasi
 
                 st.markdown("---")
                 st.markdown("📸 Berikut contoh pengerjaan yang benar:")
