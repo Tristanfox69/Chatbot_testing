@@ -3,6 +3,39 @@ import os
 import requests
 import base64
 
+# === FUNCTION: REQUEST KE OPENROUTER ===
+def ask_openrouter(question, context, mission_name):
+    api_key = os.getenv("OPENROUTER_API_KEY")
+    headers = {
+        "Authorization": f"Bearer {api_key}",
+        "HTTP-Referer": "https://chatbot-testing.streamlit.app",
+        "X-Title": "Pipin Multi-Misi"
+    }
+
+    system_prompt = (
+        f"Kamu adalah Pipin, asisten virtual yang ramah dan helpful untuk membantu user menyelesaikan misi {mission_name}. "
+        "Jawablah dengan bahasa natural, sopan, dan ringkas seperti sedang chat dengan teman. "
+        "Jawabanmu harus hanya berdasarkan dokumen berikut:\n\n" + context
+    )
+
+    data = {
+        "model": "meta-llama/llama-4-maverick:free",
+        "messages": [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": question}
+        ]
+    }
+
+    response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=data)
+    if response.status_code != 200:
+        raise Exception(f"❌ Status {response.status_code}: {response.text}")
+
+    result = response.json()
+    if "choices" not in result:
+        raise Exception("❌ Respon tidak valid dari OpenRouter")
+
+    return result["choices"][0]["message"]["content"]
+
 # === SETUP HALAMAN ===
 st.set_page_config(page_title="Pipin Pintarnya", page_icon="🤖")
 st.title("🤖 Pipin - Asisten Misi Pintar")
@@ -72,37 +105,3 @@ if selected_mission:
     # === HISTORY ===
     for msg in st.session_state.chat_history:
         st.chat_message(msg["role"]).write(msg["content"])
-
-
-# === FUNCTION: REQUEST KE OPENROUTER ===
-def ask_openrouter(question, context, mission_name):
-    api_key = os.getenv("OPENROUTER_API_KEY")
-    headers = {
-        "Authorization": f"Bearer {api_key}",
-        "HTTP-Referer": "https://chatbot-testing.streamlit.app",
-        "X-Title": "Pipin Multi-Misi"
-    }
-
-    system_prompt = (
-        f"Kamu adalah Pipin, asisten virtual yang ramah dan helpful untuk membantu user menyelesaikan misi {mission_name}. "
-        "Jawablah dengan bahasa natural, sopan, dan ringkas seperti sedang chat dengan teman. "
-        "Jawabanmu harus hanya berdasarkan dokumen berikut:\n\n" + context
-    )
-
-    data = {
-        "model": "meta-llama/llama-4-maverick:free",
-        "messages": [
-            {"role": "system", "content": system_prompt},
-            {"role": "user", "content": question}
-        ]
-    }
-
-    response = requests.post("https://openrouter.ai/api/v1/chat/completions", headers=headers, json=data)
-    if response.status_code != 200:
-        raise Exception(f"❌ Status {response.status_code}: {response.text}")
-
-    result = response.json()
-    if "choices" not in result:
-        raise Exception("❌ Respon tidak valid dari OpenRouter")
-
-    return result["choices"][0]["message"]["content"]
