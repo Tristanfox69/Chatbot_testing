@@ -93,12 +93,6 @@ if selected_mission:
             with st.spinner("Bot sedang mikir..."):
                 try:
                     response = ask_openrouter(user_input, context, selected_mission)
-                    st.session_state.chat_history.append({"role": "user", "content": user_input})
-                    st.session_state.chat_history.append({"role": "assistant", "content": response})
                     st.chat_message("assistant").write(response)
                 except Exception as e:
                     st.error(str(e))
-
-    # === HISTORY ===
-    for msg in st.session_state.chat_history:
-        st.chat_message(msg["role"]).write(msg["content"])
