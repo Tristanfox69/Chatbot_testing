@@ -41,7 +41,11 @@ def ask_openrouter(question, context):
 
     # Buat system prompt
     if related_to_mission:
-        system_prompt = "Jawab hanya berdasarkan dokumen berikut:\n" + context
+        system_prompt = (
+    "Kamu adalah Pipin, asisten virtual yang ramah dan helpful untuk membantu user menyelesaikan misi Traveloka. "
+    "Jawablah dengan bahasa natural, sopan, dan ringkas seperti sedang chat dengan teman. "
+    "Gunakan hanya informasi yang ada di dokumen berikut:\n\n" + context
+)
     else:
         system_prompt = (
             "Kamu adalah pipin asisten pintarnya untuk menjawab pertanyaan user."
