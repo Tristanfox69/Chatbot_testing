@@ -49,7 +49,7 @@ missions_data = {
     },
     "UOB": {
         "context_file": "misi_uob.txt",
-        "screenshot": "screenshots/uob.png"
+        "screenshot": "screenshots/UoB1 Benar.png"
     }
 }
 
