@@ -53,9 +53,6 @@ missions_data = {
     }
 }
 
-# === STATE ===
-if "chat_history" not in st.session_state:
-    st.session_state.chat_history = []
 
 # === PILIH MISI ===
 selected_mission = st.selectbox("📌 Pilih misi dulu yuk:", [""] + list(missions_data.keys()))
