@@ -69,10 +69,10 @@ if selected_mission:
         folder = "screenshots/"
         mission_prefix = selected_mission.lower()
 
-        matched_images = [
+        matched_images = sorted([
             f for f in os.listdir(folder)
             if f.lower().startswith(mission_prefix) and f.lower().endswith((".jpg", ".jpeg", ".png"))
-        ]
+        ])
 
         if matched_images:
             cols = st.columns(2)  # 2 kolom sejajar
