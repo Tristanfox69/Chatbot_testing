@@ -44,9 +44,9 @@ with open("screenshots/Pipin.png", "rb") as image_file:
     logo_base64 = base64.b64encode(image_file.read()).decode()
 
 st.markdown(f"""
-<div style='display: flex; align-items: center; gap: 14px; margin-bottom: 10px;'>
+<div style='display: flex; align-items: center; gap: 10px; margin-bottom: 10px;'>
     <img src='data:image/png;base64,{logo_base64}' width='60'/>
-    <h1 style='margin: 0; font-size: 2.2rem;'>Pipin - Asisten Misi Pintar</h1>
+    <h1 style='margin: 0; font-size: 3 rem;'>Pipin - Asisten Misi Pintar</h1>
 </div>
 """, unsafe_allow_html=True)
 
