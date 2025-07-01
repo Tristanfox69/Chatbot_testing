@@ -65,7 +65,7 @@ if selected_mission:
         st.error(f"Gagal membaca file misi: {e}")
 
     # === TOPIK: SCREENSHOT MULTI FILE, SIDE BY SIDE ===
-    if selected_topic == "Contoh screenshot":
+    if selected_topic == "Contoh Screenshot":
         folder = "screenshots/"
         mission_prefix = selected_mission.lower()
 
