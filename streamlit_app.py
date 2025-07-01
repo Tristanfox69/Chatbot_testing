@@ -40,7 +40,7 @@ def ask_openrouter(question, context, mission_name):
 st.set_page_config(page_title="Pipin Pintarnya", page_icon="🤖")
 
 # Tampilkan logo dan judul
-with open("Pipin.png", "rb") as image_file:
+with open("screenshots/Pipin.png", "rb") as image_file:
     logo_base64 = base64.b64encode(image_file.read()).decode()
 
 st.markdown(f"""
