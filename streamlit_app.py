@@ -64,7 +64,7 @@ if selected_mission:
     except Exception as e:
         st.error(f"Gagal membaca file misi: {e}")
 
-    # === TOPIK: SCREENSHOT MULTI FILE ===
+    # === TOPIK: SCREENSHOT MULTI FILE, SIDE BY SIDE ===
     if selected_topic == "Contoh screenshot":
         folder = "screenshots/"
         mission_prefix = selected_mission.lower()
@@ -75,18 +75,19 @@ if selected_mission:
         ]
 
         if matched_images:
-            for img_name in matched_images:
+            cols = st.columns(2)  # 2 kolom sejajar
+            for idx, img_name in enumerate(matched_images):
                 image_path = os.path.join(folder, img_name)
                 with open(image_path, "rb") as img_file:
                     encoded = base64.b64encode(img_file.read()).decode()
 
-                st.markdown("---")
-                st.markdown(f"""
-                    <div style='text-align:center;'>
-                        <img src='data:image/jpeg;base64,{encoded}' width='250'/>
-                        <p><em>📸 {img_name}</em></p>
-                    </div>
-                """, unsafe_allow_html=True)
+                with cols[idx % 2]:
+                    st.markdown(f"""
+                        <div style='text-align:center;'>
+                            <img src='data:image/jpeg;base64,{encoded}' width='250'/>
+                            <p><em>📸 Contoh SS{idx + 1} yang benar</em></p>
+                        </div>
+                    """, unsafe_allow_html=True)
         else:
             st.warning("⚠️ Tidak ada screenshot ditemukan untuk misi ini.")
 
