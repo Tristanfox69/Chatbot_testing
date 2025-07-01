@@ -44,15 +44,12 @@ st.markdown("Tanya apa pun tentang misi yang tersedia. Pipin siap bantu jawab!")
 # === DATA MISI ===
 missions_data = {
     "Traveloka": {
-        "context_file": "misi_traveloka.txt",
-        "screenshot": "screenshots/traveloka.png"
+        "context_file": "misi_traveloka.txt"
     },
     "UOB": {
-        "context_file": "misi_uob.txt",
-        "screenshot": "screenshots/UoB1 Benar.jpeg"
+        "context_file": "misi_uob.txt"
     }
 }
-
 
 # === PILIH MISI ===
 selected_mission = st.selectbox("📌 Pilih misi dulu yuk:", [""] + list(missions_data.keys()))
@@ -67,24 +64,33 @@ if selected_mission:
     except Exception as e:
         st.error(f"Gagal membaca file misi: {e}")
 
-    # === TOPIK: SCREENSHOT ===
+    # === TOPIK: SCREENSHOT MULTI FILE ===
     if selected_topic == "Contoh screenshot":
-        image_path = missions_data[selected_mission]["screenshot"]
-        if os.path.exists(image_path):
-            with open(image_path, "rb") as img_file:
-                encoded = base64.b64encode(img_file.read()).decode()
+        folder = "screenshots/"
+        mission_prefix = selected_mission.lower()
 
-            st.markdown("---")
-            st.markdown(f"""
-                <div style='text-align:center;'>
-                    <img src='data:image/jpeg;base64,{encoded}' width='250'/>
-                    <p><em>📸 Contoh pengerjaan misi {selected_mission}</em></p>
-                </div>
+        matched_images = [
+            f for f in os.listdir(folder)
+            if f.lower().startswith(mission_prefix) and f.lower().endswith((".jpg", ".jpeg", ".png"))
+        ]
+
+        if matched_images:
+            for img_name in matched_images:
+                image_path = os.path.join(folder, img_name)
+                with open(image_path, "rb") as img_file:
+                    encoded = base64.b64encode(img_file.read()).decode()
+
+                st.markdown("---")
+                st.markdown(f"""
+                    <div style='text-align:center;'>
+                        <img src='data:image/jpeg;base64,{encoded}' width='250'/>
+                        <p><em>📸 {img_name}</em></p>
+                    </div>
                 """, unsafe_allow_html=True)
         else:
-            st.warning("⚠️ Gambar tidak ditemukan. Pastikan file dan path benar.")
+            st.warning("⚠️ Tidak ada screenshot ditemukan untuk misi ini.")
 
-    # === TOPIK: LAINNYA (KE OPENROUTER) ===
+    # === TOPIK: Q&A KE OPENROUTER ===
     elif selected_topic and context:
         user_input = st.text_input("❓ Pertanyaan kamu:", placeholder="Misal: Apakah boleh uninstall aplikasi setelah misi?")
         if user_input:
