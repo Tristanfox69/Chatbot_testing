@@ -104,6 +104,8 @@ if selected_mission:
                         <p><em>📸 Contoh SS{idx + 1} yang benar</em></p>
                     </div>
                 """, unsafe_allow_html=True)
+else:
+    st.warning("⚠️ Tidak ada screenshot ditemukan untuk misi ini.")
 
         else:
             st.warning("⚠️ Tidak ada screenshot ditemukan untuk misi ini.")
