@@ -65,14 +65,14 @@ if selected_mission:
         st.error(f"Gagal membaca file misi: {e}")
 
     # === TOPIK: SCREENSHOT MULTI FILE, SIDE BY SIDE ===
-    if selected_topic == "Contoh Screenshot":
+    if selected_topic == "Contoh screenshot":
         folder = "screenshots/"
         mission_prefix = selected_mission.lower()
 
-        matched_images = sorted([
+        matched_images = [
             f for f in os.listdir(folder)
             if f.lower().startswith(mission_prefix) and f.lower().endswith((".jpg", ".jpeg", ".png"))
-        ])
+        ]
 
         if matched_images:
             cols = st.columns(2)  # 2 kolom sejajar
