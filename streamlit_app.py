@@ -38,7 +38,18 @@ def ask_openrouter(question, context, mission_name):
 
 # === SETUP HALAMAN ===
 st.set_page_config(page_title="Pipin Pintarnya", page_icon="🤖")
-st.title("🤖 Pipin - Asisten Misi Pintar")
+
+# Tampilkan logo dan judul
+with open("Pipin.png", "rb") as image_file:
+    logo_base64 = base64.b64encode(image_file.read()).decode()
+
+st.markdown(f"""
+<div style='display: flex; align-items: center; gap: 10px;'>
+    <img src='data:image/png;base64,{logo_base64}' width='40'/>
+    <h1 style='margin: 0;'>Pipin - Asisten Misi Pintar</h1>
+</div>
+""", unsafe_allow_html=True)
+
 st.markdown("Tanya apa pun tentang misi yang tersedia. Pipin siap bantu jawab!")
 
 # === DATA MISI ===
