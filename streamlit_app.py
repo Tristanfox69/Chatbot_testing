@@ -58,7 +58,7 @@ missions_data = {
     }
 }
 
-selected_mission = st.selectbox("📌 Pilih misi dulu yuk:", [""] + list(missions_data.keys()))
+selected_mission = st.text_input("📌 Ketik nama misinya (contoh: Traveloka atau UOB):")
 
 if selected_mission:
     selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh screenshot", "Pertanyaan lain"])
