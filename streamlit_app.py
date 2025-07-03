@@ -88,6 +88,7 @@ if selected_mission:
 
         if matched_images:
             if len(matched_images) == 1:
+                # === TAMPILKAN TUNGGAL (TENGAH) ===
                 image_path = os.path.join(folder, matched_images[0])
                 with open(image_path, "rb") as img_file:
                     encoded = base64.b64encode(img_file.read()).decode()
@@ -101,6 +102,7 @@ if selected_mission:
                 """, unsafe_allow_html=True)
 
             else:
+                # === TAMPILKAN SIDE-BY-SIDE ===
                 cols = st.columns(2)
                 for idx, img_name in enumerate(matched_images):
                     image_path = os.path.join(folder, img_name)
@@ -117,25 +119,7 @@ if selected_mission:
         else:
             st.warning("⚠️ Tidak ada screenshot ditemukan untuk misi ini.")
 
-    # === TOPIK: CARA PENGERJAAN OTOMATIS ===
-    elif selected_topic == "Cara Pengerjaan" and context:
-        st.markdown("### 🛠️ Cara Pengerjaan Misi")
-        steps = [line for line in context.splitlines() if any(word in line.lower() for word in ["cara", "langkah", "instruksi", "kerjakan", "ikuti"])]
-        if steps:
-            st.markdown("\n\n".join(steps))
-        else:
-            st.info("Belum ada instruksi pengerjaan yang terdeteksi di dokumen.")
-
-    # === TOPIK: REWARDS OTOMATIS ===
-    elif selected_topic == "Rewards" and context:
-        st.markdown("### 🎁 Rewards Misi")
-        rewards = [line for line in context.splitlines() if any(word in line.lower() for word in ["reward", "bonus", "hadiah", "dapat", "saldo", "voucher"])]
-        if rewards:
-            st.markdown("\n\n".join(rewards))
-        else:
-            st.info("Belum ada informasi reward yang terdeteksi di dokumen.")
-
-    # === TOPIK: Q&A MANUAL ===
+    # === TOPIK: Q&A KE OPENROUTER ===
     elif selected_topic and context:
         user_input = st.text_input("❓ Pertanyaan kamu:", placeholder="Misal: Apakah boleh uninstall aplikasi setelah misi?")
         if user_input:
