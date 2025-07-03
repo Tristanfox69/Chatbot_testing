@@ -73,7 +73,7 @@ if selected_mission:
         # Kalau mission Rating & Review, hanya 1 topik Cara Pengerjaan untuk video
         st.markdown("### 🎬 Cara Pengerjaan (Video)")
         video_folder = "videos/"
-        mission_prefix = selected_mission.lower().replace(" ", "_")  # misal rating_&_review -> rating_&_review
+        mission_prefix = selected_mission.lower().replace(" ", "_")  # misal rating_&_review.mp4 -> rating_&_review.mp4
 
         # Cari video berdasarkan prefix
         matched_videos = sorted([
