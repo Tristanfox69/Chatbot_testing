@@ -76,51 +76,73 @@ if selected_mission:
     except Exception as e:
         st.error(f"Gagal membaca file misi: {e}")
 
-    # === TOPIK: SCREENSHOT MULTI FILE, SIDE BY SIDE ===
+    # === TOPIK: CONTOH SCREENSHOT OTOMATIS ===
     if selected_topic == "Contoh screenshot":
-    folder = "screenshots/"
-    mission_prefix = selected_mission.lower()
+        folder = "screenshots/"
+        mission_prefix = selected_mission.lower()
 
-    matched_images = sorted([
-        f for f in os.listdir(folder)
-        if f.lower().startswith(mission_prefix) and f.lower().endswith((".jpg", ".jpeg", ".png"))
-    ])
+        matched_images = sorted([
+            f for f in os.listdir(folder)
+            if f.lower().startswith(mission_prefix) and f.lower().endswith((".jpg", ".jpeg", ".png"))
+        ])
 
-    st.markdown("### 📸 Contoh Screenshot")
-    st.markdown("Berikut contoh screenshot pengerjaan misi yang benar ya:")
+        st.markdown("### 📸 Contoh Screenshot")
+        st.markdown("Berikut contoh screenshot pengerjaan misi yang benar ya:")
 
-    if matched_images:
-        if len(matched_images) == 1:
-            image_path = os.path.join(folder, matched_images[0])
-            with open(image_path, "rb") as img_file:
-                encoded = base64.b64encode(img_file.read()).decode()
-
-            st.markdown("---")
-            st.markdown(f"""
-                <div style='text-align:center;'>
-                    <img src='data:image/jpeg;base64,{encoded}' width='300'/>
-                    <p><em>📸 Contoh SS1 yang benar</em></p>
-                </div>
-            """, unsafe_allow_html=True)
-
-        else:
-            cols = st.columns(2)
-            for idx, img_name in enumerate(matched_images):
-                image_path = os.path.join(folder, img_name)
+        if matched_images:
+            if len(matched_images) == 1:
+                image_path = os.path.join(folder, matched_images[0])
                 with open(image_path, "rb") as img_file:
                     encoded = base64.b64encode(img_file.read()).decode()
 
-                with cols[idx % 2]:
-                    st.markdown(f"""
-                        <div style='text-align:center;'>
-                            <img src='data:image/jpeg;base64,{encoded}' width='250'/>
-                            <p><em>📸 Contoh SS{idx + 1} yang benar</em></p>
-                        </div>
-                    """, unsafe_allow_html=True)
-    else:
-        st.warning("⚠️ Tidak ada screenshot ditemukan untuk misi ini.")
+                st.markdown("---")
+                st.markdown(f"""
+                    <div style='text-align:center;'>
+                        <img src='data:image/jpeg;base64,{encoded}' width='300'/>
+                        <p><em>📸 Contoh SS1 yang benar</em></p>
+                    </div>
+                """, unsafe_allow_html=True)
 
-    # === TOPIK: Q&A KE OPENROUTER ===
+            else:
+                cols = st.columns(2)
+                for idx, img_name in enumerate(matched_images):
+                    image_path = os.path.join(folder, img_name)
+                    with open(image_path, "rb") as img_file:
+                        encoded = base64.b64encode(img_file.read()).decode()
+
+                    with cols[idx % 2]:
+                        st.markdown(f"""
+                            <div style='text-align:center;'>
+                                <img src='data:image/jpeg;base64,{encoded}' width='250'/>
+                                <p><em>📸 Contoh SS{idx + 1} yang benar</em></p>
+                            </div>
+                        """, unsafe_allow_html=True)
+        else:
+            st.warning("⚠️ Tidak ada screenshot ditemukan untuk misi ini.")
+
+    # === TOPIK: CARA PENGERJAAN OTOMATIS ===
+    elif selected_topic == "Cara Pengerjaan" and context:
+        st.markdown("### 🛠️ Cara Pengerjaan Misi")
+        st.markdown("Berikut ini langkah-langkah atau instruksi untuk mengerjakan misi:")
+
+        steps = [line for line in context.splitlines() if any(word in line.lower() for word in ["cara", "langkah", "instruksi", "kerjakan", "ikuti"])]
+        if steps:
+            st.markdown("\n\n".join(steps))
+        else:
+            st.info("Belum ada instruksi pengerjaan yang terdeteksi di dokumen.")
+
+    # === TOPIK: REWARDS OTOMATIS ===
+    elif selected_topic == "Rewards" and context:
+        st.markdown("### 🎁 Rewards Misi")
+        st.markdown("Berikut informasi reward atau hadiah dari misi ini:")
+
+        rewards = [line for line in context.splitlines() if any(word in line.lower() for word in ["reward", "bonus", "hadiah", "dapat", "saldo", "voucher"])]
+        if rewards:
+            st.markdown("\n\n".join(rewards))
+        else:
+            st.info("Belum ada informasi reward yang terdeteksi di dokumen.")
+
+    # === TOPIK: Q&A MANUAL KE OPENROUTER ===
     elif selected_topic and context:
         user_input = st.text_input("❓ Pertanyaan kamu:", placeholder="Misal: Apakah boleh uninstall aplikasi setelah misi?")
         if user_input:
