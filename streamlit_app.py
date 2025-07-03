@@ -35,7 +35,6 @@ def ask_openrouter(question, context, mission_name):
 
     return result["choices"][0]["message"]["content"]
 
-
 # === Streamlit App Starts Here ===
 
 st.set_page_config(page_title="Pipin Pintarnya", page_icon="🤖")
@@ -53,7 +52,7 @@ st.markdown(f"""
 
 st.markdown("Tanya apa pun tentang misi yang tersedia. Pipin siap bantu jawab!")
 
-# Available missions
+# Missions data
 missions_data = {
     "Traveloka": {
         "context_file": "misi_traveloka.txt"
@@ -63,74 +62,87 @@ missions_data = {
     }
 }
 
-# Changed from dropdown to text input
-selected_mission = st.text_input("📌 Ketik nama misinya (contoh: Traveloka atau UOB):")
+available_missions = list(missions_data.keys())
 
+# Simulasi autocomplete pakai text_input + filter
+typed_mission = st.text_input("📌 Ketik nama misinya:")
+
+suggested = [m for m in available_missions if typed_mission.lower() in m.lower()] if typed_mission else []
+
+selected_mission = None
+
+if suggested and typed_mission and typed_mission.lower() not in [s.lower() for s in available_missions]:
+    st.markdown("**🔎 Pilihan yang mirip:**")
+    for m in suggested:
+        if st.button(f"Pilih: {m}"):
+            selected_mission = m
+else:
+    selected_mission = typed_mission.strip().title() if typed_mission.strip().title() in available_missions else None
+
+# Jika misi valid dipilih
 if selected_mission:
-    mission_name = selected_mission.strip().title()  # Convert ke format judul, ex: "uob" -> "Uob"
+    selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh screenshot", "Pertanyaan lain"])
 
-    if mission_name in missions_data:
-        selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh screenshot", "Pertanyaan lain"])
+    context = ""
+    try:
+        with open(missions_data[selected_mission]["context_file"], "r", encoding="utf-8") as file:
+            context = file.read()
+    except Exception as e:
+        st.error(f"Gagal membaca file misi: {e}")
 
-        context = ""
-        try:
-            with open(missions_data[mission_name]["context_file"], "r", encoding="utf-8") as file:
-                context = file.read()
-        except Exception as e:
-            st.error(f"Gagal membaca file misi: {e}")
+    if selected_topic == "Contoh screenshot":
+        folder = "screenshots/"
+        mission_prefix = selected_mission.lower()
 
-        if selected_topic == "Contoh screenshot":
-            folder = "screenshots/"
-            mission_prefix = mission_name.lower()
+        matched_images = sorted([
+            f for f in os.listdir(folder)
+            if f.lower().startswith(mission_prefix) and f.lower().endswith((".jpg", ".jpeg", ".png"))
+        ])
 
-            matched_images = sorted([
-                f for f in os.listdir(folder)
-                if f.lower().startswith(mission_prefix) and f.lower().endswith((".jpg", ".jpeg", ".png"))
-            ])
+        st.markdown("### 📸 Contoh Screenshot")
+        st.markdown("Berikut contoh screenshot pengerjaan misi yang benar ya:")
 
-            st.markdown("### 📸 Contoh Screenshot")
-            st.markdown("Berikut contoh screenshot pengerjaan misi yang benar ya:")
+        if matched_images:
+            if len(matched_images) == 1:
+                image_path = os.path.join(folder, matched_images[0])
+                with open(image_path, "rb") as img_file:
+                    encoded = base64.b64encode(img_file.read()).decode()
 
-            if matched_images:
-                if len(matched_images) == 1:
-                    image_path = os.path.join(folder, matched_images[0])
+                st.markdown("---")
+                st.markdown(f"""
+                    <div style='text-align:center;'>
+                        <img src='data:image/jpeg;base64,{encoded}' width='300'/>
+                        <p><em>📸 Contoh SS1 yang benar</em></p>
+                    </div>
+                """, unsafe_allow_html=True)
+            else:
+                cols = st.columns(2)
+                for idx, img_name in enumerate(matched_images):
+                    image_path = os.path.join(folder, img_name)
                     with open(image_path, "rb") as img_file:
                         encoded = base64.b64encode(img_file.read()).decode()
 
-                    st.markdown("---")
-                    st.markdown(f"""
-                        <div style='text-align:center;'>
-                            <img src='data:image/jpeg;base64,{encoded}' width='300'/>
-                            <p><em>📸 Contoh SS1 yang benar</em></p>
-                        </div>
-                    """, unsafe_allow_html=True)
-                else:
-                    cols = st.columns(2)
-                    for idx, img_name in enumerate(matched_images):
-                        image_path = os.path.join(folder, img_name)
-                        with open(image_path, "rb") as img_file:
-                            encoded = base64.b64encode(img_file.read()).decode()
+                    with cols[idx % 2]:
+                        st.markdown(f"""
+                            <div style='text-align:center;'>
+                                <img src='data:image/jpeg;base64,{encoded}' width='250'/>
+                                <p><em>📸 Contoh SS{idx + 1} yang benar</em></p>
+                            </div>
+                        """, unsafe_allow_html=True)
+        else:
+            st.warning("⚠️ Tidak ada screenshot ditemukan untuk misi ini.")
 
-                        with cols[idx % 2]:
-                            st.markdown(f"""
-                                <div style='text-align:center;'>
-                                    <img src='data:image/jpeg;base64,{encoded}' width='250'/>
-                                    <p><em>📸 Contoh SS{idx + 1} yang benar</em></p>
-                                </div>
-                            """, unsafe_allow_html=True)
-            else:
-                st.warning("⚠️ Tidak ada screenshot ditemukan untuk misi ini.")
+    elif selected_topic and context:
+        user_input = st.text_input("❓ Pertanyaan kamu:", placeholder="Misal: Apa aja langkah-langkahnya?")
+        if user_input:
+            st.chat_message("user").write(user_input)
 
-        elif selected_topic and context:
-            user_input = st.text_input("❓ Pertanyaan kamu:", placeholder="Misal: Apa aja langkah-langkahnya?")
-            if user_input:
-                st.chat_message("user").write(user_input)
+            with st.spinner("Pipin pusing mikir dulu ya ..."):
+                try:
+                    response = ask_openrouter(user_input, context, selected_mission)
+                    st.chat_message("assistant").write(response)
+                except Exception as e:
+                    st.error(str(e))
 
-                with st.spinner("Pipin pusing mikir dulu ya ..."):
-                    try:
-                        response = ask_openrouter(user_input, context, mission_name)
-                        st.chat_message("assistant").write(response)
-                    except Exception as e:
-                        st.error(str(e))
-    else:
-        st.warning("⚠️ Misi tidak ditemukan. Coba ketik 'Traveloka' atau 'UOB'.")
+elif typed_mission:
+    st.warning("⚠️ Misi tidak ditemukan. Coba ketik 'Traveloka' atau 'UOB'.")
