@@ -3,7 +3,6 @@ import os
 import requests
 import base64
 
-# === FUNCTION: REQUEST KE OPENROUTER ===
 def ask_openrouter(question, context, mission_name):
     api_key = os.getenv("OPENROUTER_API_KEY")
     headers = {
@@ -36,10 +35,8 @@ def ask_openrouter(question, context, mission_name):
 
     return result["choices"][0]["message"]["content"]
 
-# === SETUP HALAMAN ===
 st.set_page_config(page_title="Pipin Pintarnya", page_icon="🤖")
 
-# Tampilkan logo dan judul
 with open("screenshots/Pipin.png", "rb") as image_file:
     logo_base64 = base64.b64encode(image_file.read()).decode()
 
@@ -52,7 +49,6 @@ st.markdown(f"""
 
 st.markdown("Tanya apa pun tentang misi yang tersedia. Pipin siap bantu jawab!")
 
-# === DATA MISI ===
 missions_data = {
     "Traveloka": {
         "context_file": "misi_traveloka.txt"
@@ -62,13 +58,11 @@ missions_data = {
     }
 }
 
-# === PILIH MISI ===
 selected_mission = st.selectbox("📌 Pilih misi dulu yuk:", [""] + list(missions_data.keys()))
 
 if selected_mission:
     selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh screenshot", "Pertanyaan lain"])
 
-    # === LOAD DOKUMEN MISI ===
     context = ""
     try:
         with open(missions_data[selected_mission]["context_file"], "r", encoding="utf-8") as file:
@@ -76,7 +70,6 @@ if selected_mission:
     except Exception as e:
         st.error(f"Gagal membaca file misi: {e}")
 
-    # === TOPIK: CONTOH SCREENSHOT SAJA YANG OTOMATIS ===
     if selected_topic == "Contoh screenshot":
         folder = "screenshots/"
         mission_prefix = selected_mission.lower()
@@ -120,7 +113,6 @@ if selected_mission:
         else:
             st.warning("⚠️ Tidak ada screenshot ditemukan untuk misi ini.")
 
-    # === SEMUA TOPIK LAIN AKAN KE PIPIN (Q&A) ===
     elif selected_topic and context:
         user_input = st.text_input("❓ Pertanyaan kamu:", placeholder="Misal: Apa aja langkah-langkahnya?")
         if user_input:
