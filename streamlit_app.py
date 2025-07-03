@@ -62,24 +62,9 @@ missions_data = {
     }
 }
 
-available_missions = list(missions_data.keys())
+# ✅ Pakai selectbox yang mendukung pencarian
+selected_mission = st.selectbox("📌 Ketik atau pilih nama misinya:", [""] + list(missions_data.keys()))
 
-# Simulasi autocomplete pakai text_input + filter
-typed_mission = st.text_input("📌 Ketik nama misinya:")
-
-suggested = [m for m in available_missions if typed_mission.lower() in m.lower()] if typed_mission else []
-
-selected_mission = None
-
-if suggested and typed_mission and typed_mission.lower() not in [s.lower() for s in available_missions]:
-    st.markdown("**🔎 Pilihan yang mirip:**")
-    for m in suggested:
-        if st.button(f"Pilih: {m}"):
-            selected_mission = m
-else:
-    selected_mission = typed_mission.strip().title() if typed_mission.strip().title() in available_missions else None
-
-# Jika misi valid dipilih
 if selected_mission:
     selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh screenshot", "Pertanyaan lain"])
 
@@ -143,6 +128,3 @@ if selected_mission:
                     st.chat_message("assistant").write(response)
                 except Exception as e:
                     st.error(str(e))
-
-elif typed_mission:
-    st.warning("⚠️ Misi tidak ditemukan. Coba ketik 'Traveloka' atau 'UOB'.")
