@@ -40,7 +40,7 @@ def ask_openrouter(question, context, mission_name):
 st.set_page_config(page_title="Pipin Pintarnya", page_icon="🤖")
 
 # Load logo image
-with open("screenshots/Pipin.png", "rb") as image_file:
+with open("Screenshots/Pipin.png", "rb") as image_file:
     logo_base64 = base64.b64encode(image_file.read()).decode()
 
 st.markdown(f"""
@@ -66,7 +66,7 @@ missions_data = {
 selected_mission = st.selectbox("📌 Ketik atau pilih nama misinya:", [""] + list(missions_data.keys()))
 
 if selected_mission:
-    selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh screenshot", "Pertanyaan lain"])
+    selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh Screenshot", "Pertanyaan lain"])
 
     context = ""
     try:
@@ -75,8 +75,8 @@ if selected_mission:
     except Exception as e:
         st.error(f"Gagal membaca file misi: {e}")
 
-    if selected_topic == "Contoh screenshot":
-        folder = "screenshots/"
+    if selected_topic == "Contoh Screenshot":
+        folder = "Screenshots/"
         mission_prefix = selected_mission.lower()
 
         matched_images = sorted([
@@ -85,7 +85,7 @@ if selected_mission:
         ])
 
         st.markdown("### 📸 Contoh Screenshot")
-        st.markdown("Berikut contoh screenshot pengerjaan misi yang benar ya:")
+        st.markdown("Berikut contoh Screenshot pengerjaan misi yang benar ya:")
 
         if matched_images:
             if len(matched_images) == 1:
@@ -115,7 +115,7 @@ if selected_mission:
                             </div>
                         """, unsafe_allow_html=True)
         else:
-            st.warning("⚠️ Tidak ada screenshot ditemukan untuk misi ini.")
+            st.warning("⚠️ Tidak ada Screenshot ditemukan untuk misi ini.")
 
     elif selected_topic and context:
         user_input = st.text_input("❓ Pertanyaan kamu:", placeholder="Misal: Apa aja langkah-langkahnya?")
