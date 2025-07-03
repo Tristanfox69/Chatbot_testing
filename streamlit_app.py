@@ -35,7 +35,8 @@ def ask_openrouter(question, context, mission_name):
 
     return result["choices"][0]["message"]["content"]
 
-# Set up Streamlit page
+# === Streamlit App Starts Here ===
+
 st.set_page_config(page_title="Pipin Pintarnya", page_icon="🤖")
 
 # Load logo image
@@ -51,30 +52,19 @@ st.markdown(f"""
 
 st.markdown("Tanya apa pun tentang misi yang tersedia. Pipin siap bantu jawab!")
 
-# Available missions
+# Missions data
 missions_data = {
-    "Traveloka": {"context_file": "misi_traveloka.txt"},
-    "UOB": {"context_file": "misi_uob.txt"}
+    "Traveloka": {
+        "context_file": "misi_traveloka.txt"
+    },
+    "UOB": {
+        "context_file": "misi_uob.txt"
+    }
 }
 
-available_missions = list(missions_data.keys())
-typed_input = st.text_input("📌 Ketik nama misinya (misal: Traveloka atau UOB):")
+# ✅ Pakai selectbox yang mendukung pencarian
+selected_mission = st.selectbox("📌 Ketik atau pilih nama misinya:", [""] + list(missions_data.keys()))
 
-# Filter suggestions
-suggestions = [m for m in available_missions if typed_input.lower() in m.lower()] if typed_input else []
-selected_mission = None
-
-# Show suggestions as clickable buttons
-if suggestions and typed_input and typed_input.strip().title() not in missions_data:
-    st.markdown("**🔍 Pipin nemu ini nih:**")
-    for m in suggestions:
-        if st.button(f"➡️ {m}"):
-            selected_mission = m
-else:
-    if typed_input.strip().title() in missions_data:
-        selected_mission = typed_input.strip().title()
-
-# Proceed if a mission is selected
 if selected_mission:
     selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh screenshot", "Pertanyaan lain"])
 
@@ -138,5 +128,3 @@ if selected_mission:
                     st.chat_message("assistant").write(response)
                 except Exception as e:
                     st.error(str(e))
-elif typed_input:
-    st.warning("⚠️ Belum ketemu misi yang cocok. Coba ketik lebih lengkap.")
