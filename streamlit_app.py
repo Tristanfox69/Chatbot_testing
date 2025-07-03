@@ -78,46 +78,47 @@ if selected_mission:
 
     # === TOPIK: SCREENSHOT MULTI FILE, SIDE BY SIDE ===
     if selected_topic == "Contoh screenshot":
-        folder = "screenshots/"
-        mission_prefix = selected_mission.lower()
+    folder = "screenshots/"
+    mission_prefix = selected_mission.lower()
 
-        matched_images = sorted([
-            f for f in os.listdir(folder)
-            if f.lower().startswith(mission_prefix) and f.lower().endswith((".jpg", ".jpeg", ".png"))
-        ])
+    matched_images = sorted([
+        f for f in os.listdir(folder)
+        if f.lower().startswith(mission_prefix) and f.lower().endswith((".jpg", ".jpeg", ".png"))
+    ])
 
-        if matched_images:
-            if len(matched_images) == 1:
-                # === TAMPILKAN TUNGGAL (TENGAH) ===
-                image_path = os.path.join(folder, matched_images[0])
+    st.markdown("### 📸 Contoh Screenshot")
+    st.markdown("Berikut contoh screenshot pengerjaan misi yang benar ya:")
+
+    if matched_images:
+        if len(matched_images) == 1:
+            image_path = os.path.join(folder, matched_images[0])
+            with open(image_path, "rb") as img_file:
+                encoded = base64.b64encode(img_file.read()).decode()
+
+            st.markdown("---")
+            st.markdown(f"""
+                <div style='text-align:center;'>
+                    <img src='data:image/jpeg;base64,{encoded}' width='300'/>
+                    <p><em>📸 Contoh SS1 yang benar</em></p>
+                </div>
+            """, unsafe_allow_html=True)
+
+        else:
+            cols = st.columns(2)
+            for idx, img_name in enumerate(matched_images):
+                image_path = os.path.join(folder, img_name)
                 with open(image_path, "rb") as img_file:
                     encoded = base64.b64encode(img_file.read()).decode()
 
-                st.markdown("---")
-                st.markdown(f"""
-                    <div style='text-align:center;'>
-                        <img src='data:image/jpeg;base64,{encoded}' width='300'/>
-                        <p><em>📸 Contoh SS1 yang benar</em></p>
-                    </div>
-                """, unsafe_allow_html=True)
-
-            else:
-                # === TAMPILKAN SIDE-BY-SIDE ===
-                cols = st.columns(2)
-                for idx, img_name in enumerate(matched_images):
-                    image_path = os.path.join(folder, img_name)
-                    with open(image_path, "rb") as img_file:
-                        encoded = base64.b64encode(img_file.read()).decode()
-
-                    with cols[idx % 2]:
-                        st.markdown(f"""
-                            <div style='text-align:center;'>
-                                <img src='data:image/jpeg;base64,{encoded}' width='250'/>
-                                <p><em>📸 Contoh SS{idx + 1} yang benar</em></p>
-                            </div>
-                        """, unsafe_allow_html=True)
-        else:
-            st.warning("⚠️ Tidak ada screenshot ditemukan untuk misi ini.")
+                with cols[idx % 2]:
+                    st.markdown(f"""
+                        <div style='text-align:center;'>
+                            <img src='data:image/jpeg;base64,{encoded}' width='250'/>
+                            <p><em>📸 Contoh SS{idx + 1} yang benar</em></p>
+                        </div>
+                    """, unsafe_allow_html=True)
+    else:
+        st.warning("⚠️ Tidak ada screenshot ditemukan untuk misi ini.")
 
     # === TOPIK: Q&A KE OPENROUTER ===
     elif selected_topic and context:
