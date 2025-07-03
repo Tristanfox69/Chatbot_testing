@@ -52,7 +52,6 @@ st.markdown(f"""
 
 st.markdown("Tanya apa pun tentang misi yang tersedia. Pipin siap bantu jawab!")
 
-# Missions data
 missions_data = {
     "Traveloka": {
         "context_file": "misi_traveloka.txt"
@@ -62,11 +61,10 @@ missions_data = {
     }
 }
 
-# ✅ Pakai selectbox yang mendukung pencarian
 selected_mission = st.selectbox("📌 Ketik atau pilih nama misinya:", [""] + list(missions_data.keys()))
 
 if selected_mission:
-    selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh Screenshot", "Pertanyaan lain"])
+    selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh Screenshot", "Rating & Review", "Pertanyaan lain"])
 
     context = ""
     try:
@@ -117,7 +115,31 @@ if selected_mission:
         else:
             st.warning("⚠️ Tidak ada Screenshot ditemukan untuk misi ini.")
 
+    elif selected_topic == "Rating & Review":
+        rating_option = st.selectbox("⭐ Mau lihat apa?", ["", "Cara Pengerjaan"])
+        
+        if rating_option == "Cara Pengerjaan":
+            # Tampilkan video cara pengerjaan untuk rating & review
+            video_folder = "videos/"
+            mission_prefix = selected_mission.lower()
+
+            matched_videos = sorted([
+                f for f in os.listdir(video_folder)
+                if f.lower().startswith(mission_prefix) and f.lower().endswith((".mp4", ".mov"))
+            ])
+
+            st.markdown("### 🎬 Video Cara Pengerjaan")
+
+            if matched_videos:
+                for idx, vid_name in enumerate(matched_videos):
+                    video_path = os.path.join(video_folder, vid_name)
+                    st.video(video_path)
+                    st.caption(f"🎥 Video {idx + 1}: {vid_name}")
+            else:
+                st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
+
     elif selected_topic and context:
+        # Kalau topik selain Rating & Review (termasuk Cara Pengerjaan utama) → tampilkan konteks + chatbot
         user_input = st.text_input("❓ Pertanyaan kamu:", placeholder="Misal: Apa aja langkah-langkahnya?")
         if user_input:
             st.chat_message("user").write(user_input)
