@@ -67,33 +67,26 @@ missions_data = {
 
 selected_mission = st.selectbox("📌 Ketik atau pilih nama misinya:", [""] + list(missions_data.keys()))
 
-if selected_mission:
-    if selected_mission == "Rating & Review":
-        # Untuk misi Rating & Review, cuma tampil video cara pengerjaan
-        st.markdown("### 🎬 Cara Pengerjaan (Video)")
-        video_folder = "videos/"
-        mission_prefix = selected_mission.lower().replace(" ", "_")
+if selected_mission == "Rating & Review":
+    st.markdown("### 🎬 Cara Pengerjaan (Video)")
+    video_folder = "videos/"
+    mission_prefix = selected_mission.lower().replace(" ", "_")
 
-        matched_videos = sorted([
-            f for f in os.listdir(video_folder)
-            if f.lower().startswith(mission_prefix) and f.lower().endswith((".mp4", ".mov"))
-        ])
+    matched_videos = sorted([
+        f for f in os.listdir(video_folder)
+        if f.lower().startswith(mission_prefix) and f.lower().endswith((".mp4", ".mov"))
+    ])
 
-        if matched_videos:
-            for idx, vid_name in enumerate(matched_videos):
-                video_path = os.path.join(video_folder, vid_name)
-                video_html = f"""
-                <div style="max-width: 300px; margin-bottom: 10px;">
-                    <video width="100%" controls>
-                        <source src="file://{os.path.abspath(video_path)}" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                    <p style="text-align:center;"><em>🎥 Video {idx + 1}: {vid_name}</em></p>
-                </div>
-                """
-                st.markdown(video_html, unsafe_allow_html=True)
-        else:
-            st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
+    if matched_videos:
+        for idx, vid_name in enumerate(matched_videos):
+            video_path = os.path.join(video_folder, vid_name)
+            st.markdown(f"<div style='max-width: 300px; margin-bottom: 10px;'>", unsafe_allow_html=True)
+            st.video(video_path)
+            st.markdown(f"<p style='text-align:center;'><em>🎥 Video {idx + 1}: {vid_name}</em></p>", unsafe_allow_html=True)
+            st.markdown("</div>", unsafe_allow_html=True)
+    else:
+        st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
+
     else:
         # Untuk misi selain Rating & Review, tampilkan dropdown topik biasa
         selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh Screenshot", "Pertanyaan lain"])
