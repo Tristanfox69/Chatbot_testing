@@ -40,7 +40,7 @@ def ask_openrouter(question, context, mission_name):
 st.set_page_config(page_title="Pipin Pintarnya", page_icon="🤖")
 
 # Load logo image
-with open("Screenshots/Pipin.png", "rb") as image_file:
+with open("screenshots/Pipin.png", "rb") as image_file:
     logo_base64 = base64.b64encode(image_file.read()).decode()
 
 st.markdown(f"""
@@ -76,7 +76,7 @@ if selected_mission:
         st.error(f"Gagal membaca file misi: {e}")
 
     if selected_topic == "Contoh Screenshot":
-        folder = "Screenshots/"
+        folder = "screenshots/"
         mission_prefix = selected_mission.lower()
 
         matched_images = sorted([
