@@ -66,7 +66,7 @@ missions_data = {
 selected_mission = st.selectbox("📌 Pilih misi dulu yuk:", [""] + list(missions_data.keys()))
 
 if selected_mission:
-    selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh screenshot"])
+    selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh screenshot", "Pertanyaan lain"])
 
     # === LOAD DOKUMEN MISI ===
     context = ""
@@ -76,7 +76,7 @@ if selected_mission:
     except Exception as e:
         st.error(f"Gagal membaca file misi: {e}")
 
-    # === TOPIK: CONTOH SCREENSHOT OTOMATIS ===
+    # === TOPIK: CONTOH SCREENSHOT SAJA YANG OTOMATIS ===
     if selected_topic == "Contoh screenshot":
         folder = "screenshots/"
         mission_prefix = selected_mission.lower()
@@ -120,31 +120,9 @@ if selected_mission:
         else:
             st.warning("⚠️ Tidak ada screenshot ditemukan untuk misi ini.")
 
-    # === TOPIK: CARA PENGERJAAN OTOMATIS ===
-    elif selected_topic == "Cara Pengerjaan" and context:
-        st.markdown("### 🛠️ Cara Pengerjaan Misi")
-        st.markdown("Berikut ini langkah-langkah atau instruksi untuk mengerjakan misi:")
-
-        steps = [line for line in context.splitlines() if any(word in line.lower() for word in ["cara", "langkah", "instruksi", "kerjakan", "ikuti"])]
-        if steps:
-            st.markdown("\n\n".join(steps))
-        else:
-            st.info("Belum ada instruksi pengerjaan yang terdeteksi di dokumen.")
-
-    # === TOPIK: REWARDS OTOMATIS ===
-    elif selected_topic == "Rewards" and context:
-        st.markdown("### 🎁 Rewards Misi")
-        st.markdown("Berikut informasi reward atau hadiah dari misi ini:")
-
-        rewards = [line for line in context.splitlines() if any(word in line.lower() for word in ["reward", "bonus", "hadiah", "dapat", "saldo", "voucher"])]
-        if rewards:
-            st.markdown("\n\n".join(rewards))
-        else:
-            st.info("Belum ada informasi reward yang terdeteksi di dokumen.")
-
-    # === TOPIK: Q&A MANUAL KE OPENROUTER ===
+    # === SEMUA TOPIK LAIN AKAN KE PIPIN (Q&A) ===
     elif selected_topic and context:
-        user_input = st.text_input("❓ Pertanyaan kamu:", placeholder="Misal: Apakah boleh uninstall aplikasi setelah misi?")
+        user_input = st.text_input("❓ Pertanyaan kamu:", placeholder="Misal: Apa aja langkah-langkahnya?")
         if user_input:
             st.chat_message("user").write(user_input)
 
