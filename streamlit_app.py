@@ -125,7 +125,7 @@ if selected_mission:
         if user_input:
             st.chat_message("user").write(user_input)
 
-            with st.spinner("Bot sedang mikir..."):
+            with st.spinner("Pipin pusing mikir dulu ya ..."):
                 try:
                     response = ask_openrouter(user_input, context, selected_mission)
                     st.chat_message("assistant").write(response)
