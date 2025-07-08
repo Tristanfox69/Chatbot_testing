@@ -52,7 +52,6 @@ st.markdown(f"""
 
 st.markdown("Tanya apa pun tentang misi yang tersedia. Pipin siap bantu jawab!")
 
-# Missions data
 missions_data = {
     "Traveloka": {"context_file": "misi_traveloka.txt"},
     "UOB": {"context_file": "misi_uob.txt"},
@@ -74,10 +73,26 @@ if selected_mission:
 
         if matched_videos:
             for idx, vid_name in enumerate(matched_videos):
-                video_path = os.path.join(video_folder, vid_name).replace("\\", "/")  # untuk Windows
+                video_path = os.path.join(video_folder, vid_name)
 
-                st.video(video_path)
-                st.markdown(f"<p style='text-align:center; font-size: 0.8rem;'>🎥 Video {idx + 1}: {vid_name}</p>", unsafe_allow_html=True)
+                try:
+                    with open(video_path, "rb") as f:
+                        video_bytes = f.read()
+                        video_base64 = base64.b64encode(video_bytes).decode()
+
+                    st.markdown(f"""
+                        <div style='text-align: center; margin-bottom: 20px;'>
+                            <video controls style="max-width: 100%; border-radius: 10px;">
+                                <source src="data:video/mp4;base64,{video_base64}" type="video/mp4">
+                                Browser kamu tidak mendukung video ini.
+                            </video>
+                            <p style='font-size: 0.8rem; color: gray;'>🎥 Video {idx + 1}: {vid_name}</p>
+                        </div>
+                    """, unsafe_allow_html=True)
+
+                except Exception as e:
+                    st.warning(f"Gagal buka video: {vid_name} — {e}")
+
         else:
             st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
 
