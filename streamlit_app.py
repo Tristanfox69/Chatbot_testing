@@ -74,18 +74,16 @@ if selected_mission:
 
         if matched_videos:
             for idx, vid_name in enumerate(matched_videos):
-                video_path = os.path.join(video_folder, vid_name)
+                video_path = os.path.join(video_folder, vid_name).replace("\\", "/")  # penting untuk Windows
 
-                # Display small & centered video
+                # Gunakan HTML manual <video>
                 st.markdown(f"""
-                    <div style='max-width: 250px; margin: 0 auto; border-radius: 10px; overflow: hidden;
-                                box-shadow: 0 2px 6px rgba(0,0,0,0.2);'>
-                """, unsafe_allow_html=True)
-
-                st.video(video_path)
-
-                st.markdown(f"""
-                    <p style='text-align:center; font-size: 0.8rem; color: gray;'>🎥 Video {idx + 1}: {vid_name}</p>
+                    <div style='text-align:center; margin-bottom: 20px;'>
+                        <video width="250" controls style='border-radius:12px; box-shadow: 0 4px 8px rgba(0,0,0,0.15);'>
+                            <source src="{video_path}" type="video/mp4">
+                            Browser kamu tidak mendukung video ini.
+                        </video>
+                        <p style='font-size: 0.8rem; color: gray;'>🎥 Video {idx + 1}: {vid_name}</p>
                     </div>
                 """, unsafe_allow_html=True)
         else:
