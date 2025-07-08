@@ -69,6 +69,7 @@ selected_mission = st.selectbox("📌 Ketik atau pilih nama misinya:", [""] + li
 
 if selected_mission:
     if selected_mission == "Rating & Review":
+        # Untuk Rating & Review, tampilkan video
         st.markdown("### 🎬 Cara Pengerjaan (Video)")
         video_folder = "videos/"
         mission_prefix = selected_mission.lower().replace(" ", "_")
@@ -82,14 +83,15 @@ if selected_mission:
             for idx, vid_name in enumerate(matched_videos):
                 video_path = os.path.join(video_folder, vid_name)
 
-                # Display video with small size using container
-                st.markdown(f"<div style='width: 200px; margin: 0 auto;'>", unsafe_allow_html=True)
+                st.markdown(f"<div style='max-width: 360px; margin:auto;'>", unsafe_allow_html=True)
                 st.video(video_path)
-                st.markdown(f"<p style='text-align:center; font-size: 0.85rem;'>🎥 Video {idx + 1}: {vid_name}</p>", unsafe_allow_html=True)
+                st.markdown(
+                    f"<p style='text-align:center; font-size:0.9rem;'>🎥 Video {idx + 1}: {vid_name}</p>",
+                    unsafe_allow_html=True
+                )
                 st.markdown("</div>", unsafe_allow_html=True)
         else:
             st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
-
     else:
         selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh Screenshot", "Pertanyaan lain"])
 
