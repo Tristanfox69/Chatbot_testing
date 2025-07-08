@@ -54,15 +54,9 @@ st.markdown("Tanya apa pun tentang misi yang tersedia. Pipin siap bantu jawab!")
 
 # Missions data
 missions_data = {
-    "Traveloka": {
-        "context_file": "misi_traveloka.txt"
-    },
-    "UOB": {
-        "context_file": "misi_uob.txt"
-    },
-    "Rating & Review": {
-        "context_file": None
-    }
+    "Traveloka": {"context_file": "misi_traveloka.txt"},
+    "UOB": {"context_file": "misi_uob.txt"},
+    "Rating & Review": {"context_file": None}
 }
 
 selected_mission = st.selectbox("📌 Ketik atau pilih nama misinya:", [""] + list(missions_data.keys()))
@@ -79,28 +73,28 @@ if selected_mission:
         ])
 
         if matched_videos:
-    for idx, vid_name in enumerate(matched_videos):
-        video_path = os.path.join(video_folder, vid_name)
+            for idx, vid_name in enumerate(matched_videos):
+                video_path = os.path.join(video_folder, vid_name)
 
-        # Bungkus video dengan ukuran kecil dan center
-        st.markdown(f"""
-            <div style='max-width: 250px; margin: 0 auto; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.2);'>
-        """, unsafe_allow_html=True)
+                # Display small & centered video
+                st.markdown(f"""
+                    <div style='max-width: 250px; margin: 0 auto; border-radius: 10px; overflow: hidden;
+                                box-shadow: 0 2px 6px rgba(0,0,0,0.2);'>
+                """, unsafe_allow_html=True)
 
-        st.video(video_path)
+                st.video(video_path)
 
-        st.markdown(f"""
-            <p style='text-align:center; font-size: 0.8rem; color: gray;'>🎥 Video {idx + 1}: {vid_name}</p>
-            </div>
-        """, unsafe_allow_html=True)
-
+                st.markdown(f"""
+                    <p style='text-align:center; font-size: 0.8rem; color: gray;'>🎥 Video {idx + 1}: {vid_name}</p>
+                    </div>
+                """, unsafe_allow_html=True)
         else:
             st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
 
     else:
         selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh Screenshot", "Pertanyaan lain"])
-
         context = ""
+
         try:
             with open(missions_data[selected_mission]["context_file"], "r", encoding="utf-8") as file:
                 context = file.read()
@@ -125,7 +119,6 @@ if selected_mission:
                     with open(image_path, "rb") as img_file:
                         encoded = base64.b64encode(img_file.read()).decode()
 
-                    st.markdown("---")
                     st.markdown(f"""
                         <div style='text-align:center;'>
                             <img src='data:image/jpeg;base64,{encoded}' width='300'/>
