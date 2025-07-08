@@ -52,7 +52,7 @@ st.markdown(f"""
 
 st.markdown("Tanya apa pun tentang misi yang tersedia. Pipin siap bantu jawab!")
 
-# Missions data
+# Missions data, Rating & Review adalah misi juga
 missions_data = {
     "Traveloka": {
         "context_file": "misi_traveloka.txt"
@@ -69,7 +69,7 @@ selected_mission = st.selectbox("📌 Ketik atau pilih nama misinya:", [""] + li
 
 if selected_mission:
     if selected_mission == "Rating & Review":
-        # Untuk Rating & Review, tampilkan video
+        # Untuk misi Rating & Review, cuma tampil video cara pengerjaan
         st.markdown("### 🎬 Cara Pengerjaan (Video)")
         video_folder = "videos/"
         mission_prefix = selected_mission.lower().replace(" ", "_")
@@ -82,17 +82,14 @@ if selected_mission:
         if matched_videos:
             for idx, vid_name in enumerate(matched_videos):
                 video_path = os.path.join(video_folder, vid_name)
-
-                st.markdown(f"<div style='max-width: 360px; margin:auto;'>", unsafe_allow_html=True)
+                st.markdown(f"<div style='max-width: 300px; margin-bottom: 10px;'>", unsafe_allow_html=True)
                 st.video(video_path)
-                st.markdown(
-                    f"<p style='text-align:center; font-size:0.9rem;'>🎥 Video {idx + 1}: {vid_name}</p>",
-                    unsafe_allow_html=True
-                )
+                st.markdown(f"<p style='text-align:center;'><em>🎥 Video {idx + 1}: {vid_name}</em></p>", unsafe_allow_html=True)
                 st.markdown("</div>", unsafe_allow_html=True)
         else:
             st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
     else:
+        # Untuk misi selain Rating & Review, tampilkan dropdown topik biasa
         selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh Screenshot", "Pertanyaan lain"])
 
         context = ""
