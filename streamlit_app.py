@@ -2,7 +2,8 @@ import streamlit as st
 import os
 import requests
 import base64
-from markdown import markdown
+from markdown import markdown  # Pastikan sudah di-install
+
 
 def ask_openrouter(question, context, mission_name):
     api_key = os.getenv("OPENROUTER_API_KEY")
@@ -36,6 +37,7 @@ def ask_openrouter(question, context, mission_name):
 
     return result["choices"][0]["message"]["content"]
 
+
 # === Streamlit App Starts Here ===
 
 st.set_page_config(page_title="Pipin Pintarnya", page_icon="🤖")
@@ -53,11 +55,16 @@ st.markdown(f"""
 
 st.markdown("Tanya apa pun tentang misi yang tersedia. Pipin siap bantu jawab!")
 
-# Missions data
 missions_data = {
-    "Traveloka": {"context_file": "misi_traveloka.txt"},
-    "UOB": {"context_file": "misi_uob.txt"},
-    "Rating & Review": {"context_file": None}
+    "Traveloka": {
+        "context_file": "misi_traveloka.txt"
+    },
+    "UOB": {
+        "context_file": "misi_uob.txt"
+    },
+    "Rating & Review": {
+        "context_file": None
+    }
 }
 
 selected_mission = st.selectbox("📌 Ketik atau pilih nama misinya:", [""] + list(missions_data.keys()))
@@ -100,14 +107,13 @@ if selected_mission:
             ])
 
             st.markdown("### 📸 Contoh Screenshot")
-            st.markdown("Berikut contoh Screenshot pengerjaan misi yang benar ya:")
-
             if matched_images:
                 cols = st.columns(2)
                 for idx, img_name in enumerate(matched_images):
                     image_path = os.path.join(folder, img_name)
                     with open(image_path, "rb") as img_file:
                         encoded = base64.b64encode(img_file.read()).decode()
+
                     with cols[idx % 2]:
                         st.markdown(f"""
                             <div style='text-align:center;'>
@@ -122,10 +128,11 @@ if selected_mission:
             user_input = st.text_input("❓ Pertanyaan kamu:", placeholder="Misal: Apa aja langkah-langkahnya?")
             if user_input:
                 st.chat_message("user").write(user_input)
+
                 with st.spinner("Pipin pusing mikir dulu ya ..."):
                     try:
                         response = ask_openrouter(user_input, context, selected_mission)
-                        html_response = markdown(response)
+                        html_response = markdown(response)  # ubah markdown ke HTML
                         st.chat_message("assistant").markdown(html_response, unsafe_allow_html=True)
                     except Exception as e:
                         st.error(str(e))
