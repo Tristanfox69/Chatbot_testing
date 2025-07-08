@@ -52,7 +52,6 @@ st.markdown(f"""
 
 st.markdown("Tanya apa pun tentang misi yang tersedia. Pipin siap bantu jawab!")
 
-# Missions data
 missions_data = {
     "Traveloka": {
         "context_file": "misi_traveloka.txt"
@@ -82,13 +81,21 @@ if selected_mission:
         if matched_videos:
             for idx, vid_name in enumerate(matched_videos):
                 video_path = os.path.join(video_folder, vid_name)
-                st.markdown(f"#### 🎥 Video {idx + 1}: {vid_name}")
-                st.video(video_path)
+
+                # Pakai custom HTML <video>
+                st.markdown(f"""
+                <div style='text-align: center; margin-bottom: 30px;'>
+                    <video controls style='width: 180px; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>
+                        <source src="{video_path}" type="video/mp4">
+                        Browser kamu tidak mendukung video.
+                    </video>
+                    <p style='font-size: 0.85rem;'>🎥 Video {idx + 1}: {vid_name}</p>
+                </div>
+                """, unsafe_allow_html=True)
         else:
             st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
 
     else:
-        # === CONTEXT MODE ===
         selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh Screenshot", "Pertanyaan lain"])
 
         context = ""
