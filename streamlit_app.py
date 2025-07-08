@@ -70,30 +70,32 @@ if selected_mission:
     if selected_mission == "Rating & Review":
         # === VIDEO MODE ===
         st.markdown("### 🎬 Cara Pengerjaan (Video)")
-        video_folder = "videos/"
-        mission_prefix = selected_mission.lower().replace(" ", "_")
+video_folder = "videos/"
+mission_prefix = selected_mission.lower().replace(" ", "_")
 
-        matched_videos = sorted([
-            f for f in os.listdir(video_folder)
-            if f.lower().startswith(mission_prefix) and f.lower().endswith((".mp4", ".mov"))
-        ])
+matched_videos = sorted([
+    f for f in os.listdir(video_folder)
+    if f.lower().startswith(mission_prefix) and f.lower().endswith((".mp4", ".mov"))
+])
 
-        if matched_videos:
-            for idx, vid_name in enumerate(matched_videos):
-                video_path = os.path.join(video_folder, vid_name)
+if matched_videos:
+    for idx, vid_name in enumerate(matched_videos):
+        video_path = os.path.join(video_folder, vid_name)
+        
+        # Custom CSS wrapper untuk kecilin
+        st.markdown(f"""
+            <div style='width: 200px; margin: 0 auto;'>
+        """, unsafe_allow_html=True)
+        
+        st.video(video_path)
 
-                # Pakai custom HTML <video>
-                st.markdown(f"""
-                <div style='text-align: center; margin-bottom: 30px;'>
-                    <video controls style='width: 480px; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>
-                        <source src="{video_path}" type="video/mp4">
-                        Browser kamu tidak mendukung video.
-                    </video>
-                    <p style='font-size: 0.85rem;'>🎥 Video {idx + 1}: {vid_name}</p>
-                </div>
-                """, unsafe_allow_html=True)
-        else:
-            st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
+        st.markdown(f"""
+            <p style='text-align: center; font-size: 0.85rem;'>🎥 Video {idx + 1}: {vid_name}</p>
+            </div>
+        """, unsafe_allow_html=True)
+else:
+    st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
+
 
     else:
         selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh Screenshot", "Pertanyaan lain"])
