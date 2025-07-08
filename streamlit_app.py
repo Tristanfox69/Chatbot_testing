@@ -82,18 +82,8 @@ if selected_mission:
         if matched_videos:
             for idx, vid_name in enumerate(matched_videos):
                 video_path = os.path.join(video_folder, vid_name)
-                with open(video_path, "rb") as vid_file:
-                    video_base64 = base64.b64encode(vid_file.read()).decode()
-
-                st.markdown(f"""
-                    <div style='max-width: 520px; margin-bottom: 15px; text-align: center;'>
-                        <video controls style="width: 180px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
-                            <source src="data:video/mp4;base64,{video_base64}" type="video/mp4">
-                            Browser kamu tidak mendukung tag video.
-                        </video>
-                        <p style='font-size: 0.85rem;'><em>🎥 Video {idx + 1}: {vid_name}</em></p>
-                    </div>
-                """, unsafe_allow_html=True)
+                st.markdown(f"#### 🎥 Video {idx + 1}: {vid_name}")
+                st.video(video_path)
         else:
             st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
 
