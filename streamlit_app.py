@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import requests
 import base64
+import re
 
 def ask_openrouter(question, context, mission_name):
     api_key = os.getenv("OPENROUTER_API_KEY")
@@ -35,6 +36,11 @@ def ask_openrouter(question, context, mission_name):
 
     return result["choices"][0]["message"]["content"]
 
+def convert_links_to_markdown(text):
+    # Ubah semua https://... jadi [https://...](https://...)
+    url_pattern = r"(https?://[^\s]+)"
+    return re.sub(url_pattern, r"[\1](\1)", text)
+
 # === Streamlit App Starts Here ===
 
 st.set_page_config(page_title="Pipin Pintarnya", page_icon="🤖")
@@ -52,7 +58,6 @@ st.markdown(f"""
 
 st.markdown("Tanya apa pun tentang misi yang tersedia. Pipin siap bantu jawab!")
 
-# Missions data, Rating & Review adalah misi juga
 missions_data = {
     "Traveloka": {
         "context_file": "misi_traveloka.txt"
@@ -69,7 +74,6 @@ selected_mission = st.selectbox("📌 Ketik atau pilih nama misinya:", [""] + li
 
 if selected_mission:
     if selected_mission == "Rating & Review":
-        # Untuk misi Rating & Review, cuma tampil video cara pengerjaan
         st.markdown("### 🎬 Cara Pengerjaan (Video)")
         video_folder = "videos/"
         mission_prefix = selected_mission.lower().replace(" ", "_")
@@ -82,20 +86,18 @@ if selected_mission:
         if matched_videos:
             for idx, vid_name in enumerate(matched_videos):
                 video_path = os.path.join(video_folder, vid_name)
-                st.markdown(f"<div style='max-width: 300px; margin-bottom: 10px;'>", unsafe_allow_html=True)
                 st.video(video_path)
                 st.markdown(f"<p style='text-align:center;'><em>🎥 Video {idx + 1}: {vid_name}</em></p>", unsafe_allow_html=True)
-                st.markdown("</div>", unsafe_allow_html=True)
         else:
             st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
     else:
-        # Untuk misi selain Rating & Review, tampilkan dropdown topik biasa
         selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh Screenshot", "Pertanyaan lain"])
 
         context = ""
         try:
             with open(missions_data[selected_mission]["context_file"], "r", encoding="utf-8") as file:
-                context = file.read()
+                raw_context = file.read()
+                context = convert_links_to_markdown(raw_context)
         except Exception as e:
             st.error(f"Gagal membaca file misi: {e}")
 
@@ -112,32 +114,19 @@ if selected_mission:
             st.markdown("Berikut contoh Screenshot pengerjaan misi yang benar ya:")
 
             if matched_images:
-                if len(matched_images) == 1:
-                    image_path = os.path.join(folder, matched_images[0])
+                cols = st.columns(2)
+                for idx, img_name in enumerate(matched_images):
+                    image_path = os.path.join(folder, img_name)
                     with open(image_path, "rb") as img_file:
                         encoded = base64.b64encode(img_file.read()).decode()
 
-                    st.markdown("---")
-                    st.markdown(f"""
-                        <div style='text-align:center;'>
-                            <img src='data:image/jpeg;base64,{encoded}' width='300'/>
-                            <p><em>📸 Contoh SS1 yang benar</em></p>
-                        </div>
-                    """, unsafe_allow_html=True)
-                else:
-                    cols = st.columns(2)
-                    for idx, img_name in enumerate(matched_images):
-                        image_path = os.path.join(folder, img_name)
-                        with open(image_path, "rb") as img_file:
-                            encoded = base64.b64encode(img_file.read()).decode()
-
-                        with cols[idx % 2]:
-                            st.markdown(f"""
-                                <div style='text-align:center;'>
-                                    <img src='data:image/jpeg;base64,{encoded}' width='250'/>
-                                    <p><em>📸 Contoh SS{idx + 1} yang benar</em></p>
-                                </div>
-                            """, unsafe_allow_html=True)
+                    with cols[idx % 2]:
+                        st.markdown(f"""
+                            <div style='text-align:center;'>
+                                <img src='data:image/jpeg;base64,{encoded}' width='250'/>
+                                <p><em>📸 Contoh SS{idx + 1} yang benar</em></p>
+                            </div>
+                        """, unsafe_allow_html=True)
             else:
                 st.warning("⚠️ Tidak ada Screenshot ditemukan untuk misi ini.")
 
@@ -149,6 +138,6 @@ if selected_mission:
                 with st.spinner("Pipin pusing mikir dulu ya ..."):
                     try:
                         response = ask_openrouter(user_input, context, selected_mission)
-                        st.chat_message("assistant").write(response)
+                        st.chat_message("assistant").markdown(response)
                     except Exception as e:
                         st.error(str(e))
