@@ -52,6 +52,7 @@ st.markdown(f"""
 
 st.markdown("Tanya apa pun tentang misi yang tersedia. Pipin siap bantu jawab!")
 
+# Missions data
 missions_data = {
     "Traveloka": {
         "context_file": "misi_traveloka.txt"
@@ -68,34 +69,26 @@ selected_mission = st.selectbox("📌 Ketik atau pilih nama misinya:", [""] + li
 
 if selected_mission:
     if selected_mission == "Rating & Review":
-        # === VIDEO MODE ===
         st.markdown("### 🎬 Cara Pengerjaan (Video)")
-video_folder = "videos/"
-mission_prefix = selected_mission.lower().replace(" ", "_")
+        video_folder = "videos/"
+        mission_prefix = selected_mission.lower().replace(" ", "_")
 
-matched_videos = sorted([
-    f for f in os.listdir(video_folder)
-    if f.lower().startswith(mission_prefix) and f.lower().endswith((".mp4", ".mov"))
-])
+        matched_videos = sorted([
+            f for f in os.listdir(video_folder)
+            if f.lower().startswith(mission_prefix) and f.lower().endswith((".mp4", ".mov"))
+        ])
 
-if matched_videos:
-    for idx, vid_name in enumerate(matched_videos):
-        video_path = os.path.join(video_folder, vid_name)
-        
-        # Custom CSS wrapper untuk kecilin
-        st.markdown(f"""
-            <div style='width: 200px; margin: 0 auto;'>
-        """, unsafe_allow_html=True)
-        
-        st.video(video_path)
+        if matched_videos:
+            for idx, vid_name in enumerate(matched_videos):
+                video_path = os.path.join(video_folder, vid_name)
 
-        st.markdown(f"""
-            <p style='text-align: center; font-size: 0.85rem;'>🎥 Video {idx + 1}: {vid_name}</p>
-            </div>
-        """, unsafe_allow_html=True)
-else:
-    st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
-
+                # Display video with small size using container
+                st.markdown(f"<div style='width: 200px; margin: 0 auto;'>", unsafe_allow_html=True)
+                st.video(video_path)
+                st.markdown(f"<p style='text-align:center; font-size: 0.85rem;'>🎥 Video {idx + 1}: {vid_name}</p>", unsafe_allow_html=True)
+                st.markdown("</div>", unsafe_allow_html=True)
+        else:
+            st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
 
     else:
         selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh Screenshot", "Pertanyaan lain"])
