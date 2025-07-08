@@ -79,14 +79,21 @@ if selected_mission:
         ])
 
         if matched_videos:
-            for idx, vid_name in enumerate(matched_videos):
-                video_path = os.path.join(video_folder, vid_name)
+    for idx, vid_name in enumerate(matched_videos):
+        video_path = os.path.join(video_folder, vid_name)
 
-                # Display video with small size using container
-                st.markdown(f"<div style='width: 200px; margin: 0 auto;'>", unsafe_allow_html=True)
-                st.video(video_path)
-                st.markdown(f"<p style='text-align:center; font-size: 0.85rem;'>🎥 Video {idx + 1}: {vid_name}</p>", unsafe_allow_html=True)
-                st.markdown("</div>", unsafe_allow_html=True)
+        # Bungkus video dengan ukuran kecil dan center
+        st.markdown(f"""
+            <div style='max-width: 250px; margin: 0 auto; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 6px rgba(0,0,0,0.2);'>
+        """, unsafe_allow_html=True)
+
+        st.video(video_path)
+
+        st.markdown(f"""
+            <p style='text-align:center; font-size: 0.8rem; color: gray;'>🎥 Video {idx + 1}: {vid_name}</p>
+            </div>
+        """, unsafe_allow_html=True)
+
         else:
             st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
 
