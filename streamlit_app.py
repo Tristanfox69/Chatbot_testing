@@ -85,7 +85,7 @@ if selected_mission:
                 # Pakai custom HTML <video>
                 st.markdown(f"""
                 <div style='text-align: center; margin-bottom: 30px;'>
-                    <video controls style='width: 180px; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>
+                    <video controls style='width: 480px; border-radius: 12px; box-shadow: 0 0 10px rgba(0,0,0,0.1);'>
                         <source src="{video_path}" type="video/mp4">
                         Browser kamu tidak mendukung video.
                     </video>
