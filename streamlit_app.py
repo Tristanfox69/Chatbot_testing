@@ -77,7 +77,7 @@ if selected_mission:
                 video_path = os.path.join(video_folder, vid_name).replace("\\", "/")  # Safe for Windows
                 st.markdown(f"""
                     <div style='text-align:center; margin-bottom: 20px;'>
-                        <video width="300" controls>
+                        <video width="200" controls>
                             <source src="{video_path}" type="video/mp4">
                             Your browser does not support the video tag.
                         </video>
