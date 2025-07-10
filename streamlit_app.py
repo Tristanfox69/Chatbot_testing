@@ -67,15 +67,19 @@ missions_data = {
 
 selected_mission = st.selectbox("📌 Ketik atau pilih nama misinya:", [""] + list(missions_data.keys()))
 
-if selected_mission:
-    if selected_mission == "Rating & Review":
-        # Untuk misi Rating & Review, cuma tampil video cara pengerjaan
-        st.markdown("### 🎬 Cara Pengerjaan (Video)")
-        video_folder = "videos/"
-        mission_prefix = selected_mission.lower().replace(" ", "_")
+if selected_mission == "Rating & Review":
+    # Untuk misi Rating & Review, cuma tampil video cara pengerjaan
+    st.markdown("### 🎬 Cara Pengerjaan (Video)")
+    
+    # Pakai path absolut ke folder videos
+    video_folder = os.path.join(os.path.dirname(__file__), "videos")
+    mission_prefix = selected_mission.lower().replace(" ", "_")
 
+    try:
+        files_in_folder = os.listdir(video_folder)
+        st.write("📁 Isi folder video:", files_in_folder)  # DEBUG
         matched_videos = sorted([
-            f for f in os.listdir(video_folder)
+            f for f in files_in_folder
             if f.lower().startswith(mission_prefix) and f.lower().endswith((".mp4", ".mov"))
         ])
 
@@ -88,6 +92,10 @@ if selected_mission:
                 st.markdown("</div>", unsafe_allow_html=True)
         else:
             st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
+
+    except Exception as e:
+        st.error(f"🚫 Gagal akses folder video: {e}")
+
     else:
         # Untuk misi selain Rating & Review, tampilkan dropdown topik biasa
         selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh Screenshot", "Pertanyaan lain"])
