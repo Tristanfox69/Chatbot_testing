@@ -68,10 +68,8 @@ missions_data = {
 selected_mission = st.selectbox("📌 Ketik atau pilih nama misinya:", [""] + list(missions_data.keys()))
 
 if selected_mission == "Rating & Review":
-    # Untuk misi Rating & Review, cuma tampil video cara pengerjaan
     st.markdown("### 🎬 Cara Pengerjaan (Video)")
-    
-    # Pakai path absolut ke folder videos
+
     video_folder = os.path.join(os.path.dirname(__file__), "videos")
     mission_prefix = selected_mission.lower().replace(" ", "_")
 
@@ -92,22 +90,24 @@ if selected_mission == "Rating & Review":
                 st.markdown("</div>", unsafe_allow_html=True)
         else:
             st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
-
     except Exception as e:
         st.error(f"🚫 Gagal akses folder video: {e}")
 
-    else:
-        # Untuk misi selain Rating & Review, tampilkan dropdown topik biasa
-        selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh Screenshot", "Pertanyaan lain"])
+elif selected_mission:
+    # Untuk misi selain Rating & Review
+    selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh Screenshot", "Pertanyaan lain"])
+    
+    context = ""
+    try:
+        with open(missions_data[selected_mission]["context_file"], "r", encoding="utf-8") as file:
+            context = file.read()
+    except Exception as e:
+        st.error(f"Gagal membaca file misi: {e}")
 
-        context = ""
-        try:
-            with open(missions_data[selected_mission]["context_file"], "r", encoding="utf-8") as file:
-                context = file.read()
-        except Exception as e:
-            st.error(f"Gagal membaca file misi: {e}")
+    if selected_topic == "Contoh Screenshot":
+        ...
+        # (lanjutan screenshot sesuai kode kamu sebelumnya)
 
-        if selected_topic == "Contoh Screenshot":
             folder = "screenshots/"
             mission_prefix = selected_mission.lower()
 
