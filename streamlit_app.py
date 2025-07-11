@@ -73,27 +73,27 @@ if selected_mission:
         ])
 
         if matched_videos:
-    # Inject CSS agar semua video pakai lebar 300px
-    st.markdown("""
-        <style>
-        video {
-            width: 300px !important;
-            height: auto !important;
-        }
-        </style>
-    """, unsafe_allow_html=True)
+            # Inject CSS agar semua video pakai lebar 300px
+            st.markdown("""
+                <style>
+                video {
+                    width: 300px !important;
+                    height: auto !important;
+                }
+                </style>
+            """, unsafe_allow_html=True)
 
-    for idx, vid_name in enumerate(matched_videos):
-        video_path = os.path.join(video_folder, vid_name).replace("\\", "/")
-        st.markdown(f"""
-            <div style='text-align:center; margin-bottom: 20px;'>
-                <video controls>
-                    <source src="{video_path}" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-                <p><em>🎥 Video {idx + 1}: {vid_name}</em></p>
-            </div>
-        """, unsafe_allow_html=True)
+            for idx, vid_name in enumerate(matched_videos):
+                video_path = os.path.join(video_folder, vid_name).replace("\\", "/")
+                st.markdown(f"""
+                    <div style='text-align:center; margin-bottom: 20px;'>
+                        <video controls>
+                            <source src="{video_path}" type="video/mp4">
+                            Your browser does not support the video tag.
+                        </video>
+                        <p><em>🎥 Video {idx + 1}: {vid_name}</em></p>
+                    </div>
+                """, unsafe_allow_html=True)
         else:
             st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
 
