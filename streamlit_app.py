@@ -2,6 +2,7 @@ import streamlit as st
 import os
 import requests
 import base64
+from streamlit_searchbox import st_searchbox
 
 def ask_openrouter(question, context, mission_name):
     api_key = os.getenv("OPENROUTER_API_KEY")
@@ -59,9 +60,19 @@ missions_data = {
     "Rating & Review": {"context_file": None}
 }
 
-selected_mission = st.selectbox("📌 Ketik atau pilih nama misinya:", [""] + list(missions_data.keys()))
+# === AUTOSUGGEST FIELD ===
+def search_mission(search_term: str):
+    return [m for m in missions_data.keys() if search_term.lower() in m.lower()]
+
+selected_mission = st_searchbox(
+    search_function=search_mission,
+    placeholder="🔍 Ketik nama misinya (misal: Traveloka)...",
+    key="mission_search"
+)
 
 if selected_mission:
+    st.success(f"✅ Misi dipilih: {selected_mission}")
+
     if selected_mission == "Rating & Review":
         st.markdown("### 🎬 Cara Pengerjaan (Video)")
         video_folder = "videos/"
