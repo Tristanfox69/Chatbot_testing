@@ -19,7 +19,7 @@ def ask_openrouter(question, context, mission_name):
     )
 
     data = {
-        "model": "meta-llama/llama-4-maverick:free",
+        "model": "model": "deepseek/deepseek-r1:free",
         "messages": [
             {"role": "system", "content": system_prompt},
             {"role": "user", "content": question}
