@@ -2,8 +2,12 @@ import streamlit as st
 import os
 import requests
 import base64
+import zipfile
+import re
+from datetime import datetime
 from streamlit_searchbox import st_searchbox
 
+# === Function to Ask OpenRouter ===
 def ask_openrouter(question, context, mission_name):
     api_key = os.getenv("OPENROUTER_API_KEY")
     headers = {
@@ -36,8 +40,45 @@ def ask_openrouter(question, context, mission_name):
 
     return result["choices"][0]["message"]["content"]
 
-# === Streamlit App Starts Here ===
+# === Function to Download chats.zip from GDrive ===
+def download_chats_zip():
+    url = "https://drive.google.com/uc?export=download&id=1x5Ce2fd74u68SRFMb4GjNPDSAnoU3KQB"
+    local_path = "chats.zip"
 
+    if not os.path.exists(local_path):
+        with st.spinner("📥 Mengunduh file chats.zip dari Google Drive..."):
+            response = requests.get(url)
+            if response.status_code == 200:
+                with open(local_path, "wb") as f:
+                    f.write(response.content)
+            else:
+                st.error("❌ Gagal mengunduh file chats.zip")
+
+# === Function to Read WhatsApp Chat ===
+def read_wa_chats_from_zip(zip_path="chats.zip"):
+    if not os.path.exists(zip_path):
+        return ["❌ File chats.zip tidak ditemukan."]
+
+    try:
+        with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+            txt_files = [f for f in zip_ref.namelist() if f.endswith(".txt")]
+            if not txt_files:
+                return ["❌ Tidak ada file .txt di dalam ZIP"]
+
+            result = []
+            for txt_file in txt_files:
+                with zip_ref.open(txt_file) as f:
+                    lines = f.read().decode("utf-8", errors="ignore").splitlines()
+                    for line in lines:
+                        match = re.match(r"(\d{2}/\d{2}/\d{4}), (\d{2}:\d{2}) - ([^:]+): (.+)", line)
+                        if match:
+                            date, time, sender, message = match.groups()
+                            result.append(f"🕒 {date} {time} - **{sender}**: {message}")
+            return result or ["⚠️ Tidak ada pesan ditemukan."]
+    except Exception as e:
+        return [f"❌ Gagal membaca ZIP: {e}"]
+
+# === Streamlit App Starts Here ===
 st.set_page_config(page_title="Pipin Pintarnya", page_icon="🤖")
 
 # Load logo image
@@ -57,7 +98,8 @@ st.markdown("Tanya apa pun tentang misi yang tersedia. Pipin siap bantu jawab!")
 missions_data = {
     "Traveloka": {"context_file": "misi_traveloka.txt"},
     "UOB": {"context_file": "misi_uob.txt"},
-    "Rating & Review": {"context_file": None}
+    "Rating & Review": {"context_file": None},
+    "Customer Service": {"context_file": None}
 }
 
 # === AUTOSUGGEST FIELD ===
@@ -90,6 +132,13 @@ if selected_mission:
                 st.video(video_path)
         else:
             st.warning("⚠️ Tidak ada video ditemukan untuk misi ini.")
+
+    elif selected_mission == "Customer Service":
+        st.markdown("### 💬 Riwayat Chat WhatsApp (Customer Service)")
+        download_chats_zip()
+        chat_lines = read_wa_chats_from_zip("chats.zip")
+        for line in chat_lines:
+            st.markdown(f"- {line}")
 
     else:
         selected_topic = st.selectbox("🔍 Mau lihat apa?", ["", "Cara Pengerjaan", "Rewards", "Contoh Screenshot", "Pertanyaan lain"])
